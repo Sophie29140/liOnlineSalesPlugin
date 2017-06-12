@@ -6,4 +6,5 @@ all:
     parameters:
 
     services:
-# TODO
+        api_oauth_service:
+            class: ApiOAuthService

@@ -4,8 +4,9 @@
 
 return [
   'modules' => [
-
-
+    
+    'osApiOAuth',
+    
   ],
   'filters' => [
     'exceptionCatcherFilter' => 'on',

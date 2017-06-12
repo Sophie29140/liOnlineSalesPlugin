@@ -1,0 +1,39 @@
+generator:
+  class: sfDoctrineGenerator
+  param:
+    model_class:           OsApplication
+    theme:                 jroller
+    non_verbose_templates: true
+    with_show:             false
+    singular:              ~
+    plural:                ~
+    route_prefix:          os_application
+    with_doctrine_route:   true
+    actions_base_class:    sfActions
+    i18n_catalogue:        li_os
+
+    config:
+      actions:
+      fields:
+        secret_new:
+          label: Secret
+          help: Let it empty if no change is required
+      list:
+        display: [identifier, _user, expires_at]
+        actions:
+          _new:
+            credentials: [tck-onlinechoices-app-new]
+        object_actions:
+          _edit:
+            credentials: [tck-onlinechoices-app-edit]
+          _delete:
+            credentials: [tck-onlinechoices-app-del]
+        batch_actions:
+          _delete:
+            credentials: [tck-onlinechoices-app-del]
+      filter:
+        display: [identifier, user_id, expires_at]
+      form:
+        display: [identifier, secret_new, _generator, user_id, expires_at]
+      edit:    ~
+      new:     ~

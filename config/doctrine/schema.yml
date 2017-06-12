@@ -12,17 +12,24 @@ OsToken:
     expires_at:
       type: timestamp
       notnull: true
-    oc_application_id:
+    os_application_id:
+      type: integer
+      notnull: true
+    transaction_id:
       type: integer
       notnull: true
   indexes:
-    oc_token_token_idx:
+    os_token_token_idx:
       fields: [token]
   relations:
-    OcApplication:
+    Transaction:
+      foreignType: one
       onDelete: CASCADE
       onUpdate: CASCADE
-      foreignAlias: OcTokens
+    OsApplication:
+      onDelete: CASCADE
+      onUpdate: CASCADE
+      foreignAlias: OsTokens
 OsApplication:
   inheritance:
     extends: Dummy
@@ -39,12 +46,12 @@ OsApplication:
       notnull: true
     expires_at: timestamp
   indexes:
-    oc_application_identifier_secret_idx:
+    os_application_identifier_secret_idx:
       fields: [identifier, secret]
   relations:
     User:
       local: user_id
       class: sfGuardUser
-      foreignAlias: OcApplications
+      foreignAlias: OsApplications
       onDelete: CASCADE
       onUpdate: CASCADE
