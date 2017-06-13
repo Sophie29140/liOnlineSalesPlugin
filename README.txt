@@ -14,4 +14,4 @@ Adding an application:
 - enable the osApplication module
 - go to http[s]://[domain.tld]/[controler]/osApplication
 - add a new Application with correct login/passwd
-- try http[s]://[domain.tld]/[controler]/api/oauth/v2/token?client_id=[id]&client_secret=[passwd]&grant_type=password
+- try http[s]://[domain.tld]/[controler]/api/oauth/v2/token?client_id=[name]&client_secret=[passwd]&grant_type=password
