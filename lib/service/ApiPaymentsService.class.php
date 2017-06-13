@@ -108,8 +108,8 @@ class ApiPaymentsService extends ApiEntityService
         $token = $this->oauth->getToken();
         return Doctrine_Query::create()
             ->from('Payment root')
-            ->leftJoin('root.Transaction t')
-            ->leftJoin('t.OsToken token')
+            ->leftJoin('root.Transaction Transaction')
+            ->leftJoin('Transaction.OsToken token')
             ->andWhere('token.id = ?', $token->id)
         ;
     }
