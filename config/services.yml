@@ -8,3 +8,8 @@ all:
     services:
         api_oauth_service:
             class: ApiOAuthService
+        api_payments_service:
+            class: ApiPaymentsService
+            calls:
+                - ['setOAuthService', ['@api_oauth_service']]
+                - ['setTranslationService', ['@api_translation_service']]

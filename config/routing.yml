@@ -144,36 +144,36 @@
 ## ORDERS
 ##
 #
-#oc_api_orders:
-#    url: /api/v2/orders
-#    class: sfRequestRoute
-#    param: { module: ocApiOrders, action: index }
-#    options:
-#        credentials: tck-onlinechoices-api-orders
-#    requirements:
-#        sf_method: [GET]
-#
-#oc_api_orders_resource:
-#    url: /api/v2/orders/:id
-#    class: sfRequestRoute
-#    param: { module: ocApiOrders, action: resource }
-#    options:
-#        credentials: tck-onlinechoices-api-orders-show
-#    requirements:
-#        id: \d+
-#        sf_method: [GET]
-#
-#oc_api_orders_action:
-#    url: /api/v2/orders/:do_action/:id
-#    class: sfRequestRoute
-#    param: { module: ocApiOrders, action: action }
-#    options:
-#        credentials: tck-onlinechoices-api-orders-action
-#    requirements:
-#        id: \d+
-#        do_action: ship|cancel|complete
-#        sf_method: [GET]
-#
+os_api_orders:
+    url: /api/v2/orders
+    class: sfRequestRoute
+    param: { module: ocApiOrders, action: index }
+    options:
+        credentials: tck-onlinechoices-api-orders
+    requirements:
+        sf_method: [GET]
+
+os_api_orders_resource:
+    url: /api/v2/orders/:id
+    class: sfRequestRoute
+    param: { module: ocApiOrders, action: resource }
+    options:
+        credentials: tck-onlinechoices-api-orders-show
+    requirements:
+        id: \d+
+        sf_method: [GET]
+
+os_api_orders_action:
+    url: /api/v2/orders/:do_action/:id
+    class: sfRequestRoute
+    param: { module: ocApiOrders, action: action }
+    options:
+        credentials: tck-onlinechoices-api-orders-action
+    requirements:
+        id: \d+
+        do_action: ship|cancel|complete
+        sf_method: [GET]
+
 ##
 ## CARTS
 ##
@@ -364,25 +364,25 @@
 ##
 ## PAYMENTS
 ##
-#oc_api_payments:
-#    url: /api/v2/payments
-#    class: sfRequestRoute
-#    param: { module: ocApiPayments, action: index }
-#    options:
-#        credentials: tck-onlinechoices-api-payments
-#    requirements:
-#        sf_method: [GET]
-#
-#oc_api_payments_resource:
-#    url: /api/v2/payments/:id
-#    class: sfRequestRoute
-#    param: { module: ocApiPayments, action: resource }
-#    options:
-#        credentials: tck-onlinechoices-api-payments-show
-#    requirements:
-#        id: \d+
-#        sf_method: [GET]
-#
+os_api_payments:
+    url: /api/v2/payments
+    class: sfRequestRoute
+    param: { module: osApiPayments, action: index }
+    options:
+        credentials: tck-onlinechoices-api-payments
+    requirements:
+        sf_method: [GET]
+
+os_api_payments_resource:
+    url: /api/v2/payments/:id
+    class: sfRequestRoute
+    param: { module: osApiPayments, action: resource }
+    options:
+        credentials: tck-onlinechoices-api-payments-show
+    requirements:
+        id: \d+
+        sf_method: [GET]
+
 ##
 ## PRICES
 ##
