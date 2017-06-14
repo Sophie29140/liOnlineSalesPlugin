@@ -58,7 +58,7 @@ class liOnlineSalesPluginConfiguration extends sfPluginConfiguration
         'Authorize Applications' => array(
           'url'   => array(
             'app' => 'tck',
-            'route' => 'ocApplication/index'
+            'route' => 'osApplication/index'
           ),
           'credential' => array(),
           'i18n'  => 'li_oc',
