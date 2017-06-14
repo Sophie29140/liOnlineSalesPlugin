@@ -121,25 +121,25 @@
 ##
 ## MANIFESTATION
 ##
-#oc_api_manifestations:
-#    url: /api/v2/manifestations
-#    class: sfRequestRoute
-#    param: { module: ocApiManifestations, action: index }
-#    options:
-#        credentials: tck-onlinechoices-api-manifestations
-#    requirements:
-#        sf_method: [GET]
-#
-#oc_api_manifestations_resource:
-#    url: /api/v2/manifestations/:id
-#    class: sfRequestRoute
-#    param: { module: ocApiManifestations, action: resource }
-#    options:
-#        credentials: tck-onlinechoices-api-manifestations-show
-#    requirements:
-#        id: \d+
-#        sf_method: [GET]
-#
+os_api_manifestations:
+    url: /api/v2/manifestations
+    class: sfRequestRoute
+    param: { module: osApiManifestations, action: index }
+    options:
+        credentials: tck-onlinechoices-api-manifestations
+    requirements:
+        sf_method: [GET]
+
+os_api_manifestations_resource:
+    url: /api/v2/manifestations/:id
+    class: sfRequestRoute
+    param: { module: osApiManifestations, action: resource }
+    options:
+        credentials: tck-onlinechoices-api-manifestations-show
+    requirements:
+        id: \d+
+        sf_method: [GET]
+
 ##
 ## ORDERS
 ##

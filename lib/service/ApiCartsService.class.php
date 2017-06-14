@@ -15,12 +15,14 @@ class ApiCartsService extends ApiEntityService
 
     protected static $FIELD_MAPPING = [
         'id'            => ['type' => 'single', 'value' => 'id'],
-        'items'         => ['type' => null, 'value' => null],
-        'itemsTotal'    => ['type' => null, 'value' => null],
-        'total'         => ['type' => null, 'value' => null],
+        'items'         => ['type' => 'value', 'value' => []],
+        'itemsTotal'    => ['type' => 'value', 'value' => 0],
+        'adjustments'   => ['type' => 'value', 'value' => []],
+        'adjustmentsTotal' => ['type' => 'value', 'value' => 0],
+        'total'         => ['type' => 'value', 'value' => 0],
         'customer'      => ['type' => null, 'value' => null],
-        'currencyCode'  => ['type' => null, 'value' => null],
-        'localeCode'    => ['type' => null, 'value' => null],
+        'currencyCode'  => ['type' => 'value', 'value' => ''],
+        'localeCode'    => ['type' => 'value', 'value' => ''],
         'checkoutState' => ['type' => null, 'value' => null],
     ];
 
@@ -115,12 +117,16 @@ class ApiCartsService extends ApiEntityService
             $entity['customer'] = $this->customersService->findOneById($record->contact_id);
         }
         
-        $entity['checkoutState'] = $record->Order->count() == 0 ? 'fullfilled' : 'cart';
+        $entity['checkoutState'] = $record->Order->count() != 0 ? 'fullfilled' : 'cart';
+        
+        // locale
         $cultures = array_keys(sfConfig::get('project_internals_cultures', ['fr' => 'Français']));
         $entity['localeCode']    = array_shift($cultures);
 
-        $entity['items'] = [];
-        $entity['itemsTotal'] = 0;
+        // currency
+        $currency = sfConfig::get('project_internals_currency', ['iso' => 978, 'symbol' => '€']);
+        $entity['currencyCode'] = $currency['iso'];
+
         // cart items
         $query = [
             'limit'    => 100, // TODO
@@ -129,13 +135,14 @@ class ApiCartsService extends ApiEntityService
         ];
         $entity['items'] = $this->cartItemsService->findAll($record->id, $query);
 
-        // totals
-        $entity['itemsTotal'] = 0;
+        // items iteration
         foreach ($entity['items'] as $item) {
-            $entity['itemsTotal'] += $item['total'];
+            $entity['itemsTotal'] += $item['unitsTotal'];
+            foreach ( $item['adjustments'] as $adj ) {
+                $entity['adjustments'][] = $adj;
+            }
         }
 
-        $entity['adjustments'] = [];  // TODO
 
         $entity['adjustmentsTotal'] = 0;
         foreach($entity['adjustments'] as $adjustment) {
@@ -143,10 +150,6 @@ class ApiCartsService extends ApiEntityService
         }
 
         $entity['total'] = $entity['itemsTotal'] + $entity['adjustmentsTotal'];
-
-        // currency
-        $currency = sfConfig::get('project_internals_currency', ['iso' => 978, 'symbol' => '€']);
-        $entity['currencyCode'] = $currency['iso'];
 
         return $entity;
     }
@@ -199,7 +202,7 @@ class ApiCartsService extends ApiEntityService
     public function isCartEditable($cartId)
     {
         $cart = $this->findOneById($cartId);
-        if ( 0 == count($cart) ) {
+        if ( count($cart) == 0 ) {
             return false;
         }
         if ($cart['checkoutState'] != 'cart') {

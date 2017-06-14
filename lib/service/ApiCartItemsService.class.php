@@ -16,19 +16,27 @@ class ApiCartItemsService extends ApiEntityService
 
      protected static $FIELD_MAPPING = [
         'id'               => ['type' => 'single', 'value' => 'id'],
-        'type'             => ['type' => 'null', 'value' => 'null'],
-        'quantity'         => ['type' => 'null', 'value' => 'null'],
-        'declination'      => ['type' => 'null', 'value' => 'null'],
-        'totalAmount'      => ['type' => 'null', 'value' => 'null'],
-        'unitPrice'        => ['type' => 'single', 'value' => 'Price.value'],
-        'total'            => ['type' => 'null', 'value' => 'null'],
-        'vat'              => ['type' => 'null', 'value' => 'null'],
-        'units'            => ['type' => 'null', 'value' => 'null'],
-        'unitsTotal'       => ['type' => 'null', 'value' => 'null'],
-        'adjustments'      => ['type' => 'null', 'value' => 'null'],
-        'adjustmentsTotal' => ['type' => 'null', 'value' => 'null'],
-        'rank'             => ['type' => 'single', 'value' => 'rank'],
-        'state'            => ['type' => 'single', 'value' => 'accepted'],
+        'type'             => ['type' => null, 'value' => null],
+        'quantity'         => ['type' => null, 'value' => null],
+        'declination.id'   => ['type' => 'single', 'value' => 'gauge_id'],
+        'declination.code' => ['type' => 'single', 'value' => 'Declination.code'],
+        'declination.position' => ['type' => null, 'value' => null],
+        'declination.translations' => ['type' => 'collection', 'value' => 'Gauge.Workspace.Translation'],
+        'unitPrice'        => ['type' => 'single', 'value' => 'value'],
+        'total'            => ['type' => null, 'value' => null],
+        'units.id'         => ['type' => 'single', 'value' => 'id'],
+        'units.adjustments.id'   => ['type' => null, 'value' => null],
+        'units.adjustments.type'   => ['type' => 'value', 'value' => 'taxes'],
+        'units.adjustments.label'  => ['type' => 'value', 'value' => 'Taxes'],
+        'units.adjustments.amount' => ['type' => 'single', 'value' => 'taxes'],
+        'units.adjustmentsTotal'   => ['type' => 'single', 'value' => 'taxes'],
+        'unitsTotal'       => ['type' => null, 'value' => null],
+        'adjustments'      => ['type' => null, 'value' => null],
+        'adjustmentsTotal' => ['type' => null, 'value' => null],
+        '_link.product'    => ['type' => null, 'value' => null],
+        '_link.order'      => ['type' => null, 'value' => null],
+        'rank'             => ['type' => null, 'value' => null],
+        'state'            => ['type' => null, 'value' => null],
      ];
 
     /**
@@ -40,6 +48,17 @@ class ApiCartItemsService extends ApiEntityService
      * @var ApiManifestationsService
      */
     protected $manifestationsService;
+    
+    protected $type = 'ticket';
+    
+    public function setType($type)
+    {
+        return $this;
+    }
+    public function getType()
+    {
+        return $this->type;
+    }
 
     /**
      * @param ApiOAuthService $service
@@ -57,6 +76,66 @@ class ApiCartItemsService extends ApiEntityService
         $this->manifestationsService = $service;
     }
 
+    /**
+     * @param array $entity
+     * @param Doctrine_Record $record
+     * @return array
+     */
+    protected function postFormatEntity(array $entity, Doctrine_Record $record)
+    {
+        $types = ['Ticket' => 'ticket', 'BoughtProduct' => 'product', 'MemberCard' => 'pass'];
+        $entity['type'] = !isset($types[get_class($record)]) ? $types['BoughtProduct'] : $types[get_class($record)];
+
+        $entity['unitsTotal'] = 0;
+        $entity['adjustmentsTotal'] = 0;
+        $entity['quantity'] = 1;
+        $entity['unitPrice'] = round($entity['unitPrice']/(1+$record->vat),2);
+        
+        $entity['adjustments'] = [];
+        $entity['adjustmentsTotal'] = 0;
+        $entity['units'] = [$entity['units']];
+        foreach ( $entity['units'] as $u => &$unit ) {
+            if ( $unit['adjustments']['amount'] == 0 ) {
+                $unit['adjustments'] = [];
+            }
+            else {
+                $entity['adjustments'][] = $unit['adjustments'];
+                $entity['adjustmentsTotal'] += $unit['adjustments']['amount'];
+                $unit['adjustments'] = [$unit['adjustments']];
+            }
+            
+            if ( $record->vat != 0 ) {
+                $unit['adjustments'][] = $adj = [
+                    'id' => null,
+                    'type' => 'vat',
+                    'label' => 'VAT '.($record->vat*100).'%',
+                    'amount' => $record->value - $entity['unitPrice'],
+                ];
+                $unit['adjustmentsTotal'] += $adj['amount'];
+                $entity['adjustmentsTotal'] += $adj['amount'];
+                $entity['adjustments'][] = $adj;
+            }
+        }
+
+        $entity['unitsTotal'] = $entity['unitPrice'] * $entity['quantity'];
+        $entity['total'] = $entity['unitsTotal'] + $entity['adjustmentsTotal'];
+        
+        sfContext::getInstance()->getConfiguration()->loadHelpers(['Url']);
+        switch ( $entity['type'] ) {
+            case 'product':
+            case 'pass':
+                // TODO
+            default:
+                $entity['_link']['product'] = url_for('@os_api_manifestations_resource?id='.$record->manifestation_id);
+                $entity['_link']['order'] = url_for('@os_api_orders_resource?id='.$record->transaction_id);
+                break;
+        }
+        
+        $entity['state'] = $record->isSold() ? 'sold' : null;
+        
+        return $entity;
+    }
+    
     /**
      *
      * @param int $cart_id
@@ -141,19 +220,18 @@ class ApiCartItemsService extends ApiEntityService
         if ( !$this->checkGaugeAvailability($declinationId) ) {
             throw new liApiException('Gauge is full or not available in your context');
         }
-
-        $cartItem = $this->buildQuery([])
-            ->andWhere('root.price_id = ?', $priceId)
-            ->andWhere('root.gauge_id = ?', $declinationId)
-            ->andWhere('root.transaction_id = ?', (int)$cartId)
-            ->fetchOne()
-        ;
-        if (!$cartItem) {
-            $cartItem = new OcTicket;
-            $cartItem->oc_transaction_id = $cartId;
-            $cartItem->price_id = $priceId;
-            $cartItem->gauge_id = $declinationId;
-            $cartItem->save();
+        
+        switch ( $data['type'] ) {
+            case 'product':
+            case 'pass':
+                // TODO
+            default:
+                $cartItem = new Ticket;
+                $cartItem->transaction_id = $cartId;
+                $cartItem->price_id = $priceId;
+                $cartItem->gauge_id = $declinationId;
+                $cartItem->save();
+                break;
         }
 
         return $this->getFormattedEntity($cartItem);
@@ -162,7 +240,7 @@ class ApiCartItemsService extends ApiEntityService
 
     public function checkGaugeAvailability($gaugeId)
     {
-        $gauge = Doctrine::getTable('gauge')->find($gaugeId);
+        $gauge = Doctrine::getTable('Gauge')->find($gaugeId);
         if (!$gauge) {
             return false;
         }
@@ -179,6 +257,7 @@ class ApiCartItemsService extends ApiEntityService
      */
     public function checkGaugeAndPriceAccess($gaugeId, $priceId)
     {
+        return true; // TODO remove this line and use the manifestationsService
         $count = $this->manifestationsService->buildQuery([])
             ->andWhere('g.id = ?', $gaugeId)
             ->andWhere('(FALSE')
@@ -200,15 +279,10 @@ class ApiCartItemsService extends ApiEntityService
      */
     public function updateCartItem($cartId, $itemId, $data)
     {
-        // Check existence and access
-        $item = $this->findOne($cartId, $itemId);
-
-        if (count($item) == 0) {
-            return false;
-        }
-
+        $type = !isset($data['type']) ? 'ticket' : $data['type'];
+        
         // Update cart item
-        switch($item['type']) {
+        switch($type) {
             case 'ticket':
                 $success = $this->updateTicketCartItem($itemId, $data);
                 break;
@@ -241,70 +315,17 @@ class ApiCartItemsService extends ApiEntityService
         if (!$cartItem) {
             return false;
         }
-
-        if (isset($data['rank'])) {
-            if ( (int)$data['rank'] <= 0 ) {
-                return false;
-            }
-            $cartItem->rank = (int)$data['rank'];
-        }
+        
+        $accessor = new liApiPropertyAccessor;
+        $cartItem = $accessor->toRecord($data, $cartItem, static::$FIELD_MAPPING);
 
         if (isset($data['quantity'])) {
-            if ( (int)$data['quantity'] <= 0 ) {
+            if ( (int)$data['quantity'] != 1 ) {
                 return false;
             }
-            //$cartItem->quantity = 1;  // It is always 1 for ticket
         }
 
         $cartItem->save();
-        return true;
-    }
-
-    /**
-     * @param int $cartId
-     * @param array $data
-     * @return boolean   true if successful, false if failed
-     */
-    public function reorderItems($cartId, $data)
-    {
-        // Validate data
-        if (!is_array($data)) {
-            return false;
-        }
-
-        $ranks = [];
-        $cartItemIds = [];
-        foreach($data as $d) {
-            if (!isset($d['cartItemId']) || !isset($d['rank'])) {
-                return false;
-            }
-            $ranks[$d['cartItemId']] = (int)$d['rank'];
-            $cartItemIds[] = (int)$d['cartItemId'];
-        }
-
-        $cartItems = $dotrineCol = $this->buildQuery([])
-            ->leftJoin('root.Gauge gau')
-            ->andWhere('root.oc_transaction_id = ?', $cartId)
-            ->andWhereIn('root.id', $cartItemIds)
-            ->execute()
-        ;
-
-        // Check if all cart items belong to the same time slot
-        $declinationIds = [];
-        foreach($cartItems as $item) {
-            $declinationIds[] = $item->Gauge->manifestation_id;
-        }
-        $timeSlotIds = $this->getTimeSlotIds($declinationIds);
-        if (count($timeSlotIds) != 1) {
-            //return false;
-        }
-
-        // Update cart item ranks
-        foreach($cartItems as $item) {
-            $item->rank = $ranks[$item->id];
-            $item->save();
-        }
-
         return true;
     }
 
@@ -314,16 +335,10 @@ class ApiCartItemsService extends ApiEntityService
      * @param int $itemId
      * @return boolean   true if successful, false if failed
      */
-    public function deleteCartItem($cartId, $itemId)
+    public function deleteCartItem($cartId, $itemId, $type)
     {
-        // Check existence and access
-        $item = $this->findOne($cartId, $itemId);
-        if (count($item) == 0) {
-            return false;
-        }
-
         // Update cart item
-        switch($item['type']) {
+        switch($type) {
             case 'ticket':
                 $success = $this->deleteTicketCartItem($itemId);
                 break;
@@ -347,8 +362,12 @@ class ApiCartItemsService extends ApiEntityService
      */
     private function deleteTicketCartItem($itemId)
     {
-        $item = Doctrine::getTable('OcTicket')->find($itemId);
+        $item = Doctrine::getTable('Ticket')->find($itemId);
         if (!$item) {
+            return false;
+        }
+        
+        if ( $item->isSold() ) {
             return false;
         }
 
@@ -368,14 +387,12 @@ class ApiCartItemsService extends ApiEntityService
         if (count($item) == 0) {
             return false;
         }
-
-        // Find time slot used by the cart item
-        $timeSlotId = $this->getTimeSlotId($item['declination']['id']);
-        if (!$timeSlotId) {
+        
+        if ( $item['state'] == 'sold' ) {
             return false;
         }
 
-        return !$this->isTimeSlotFrozen($cartId, $timeSlotId);
+        return true;
     }
 
     /**
@@ -385,131 +402,30 @@ class ApiCartItemsService extends ApiEntityService
      */
     public function isCartItemCreatable($cartId, $declinationId)
     {
-
-        // Find time slot
-        $timeSlotId = $this->getTimeSlotId($declinationId);
-        if (!$timeSlotId) {
-            return false;
-        }
-
-        return !$this->isTimeSlotFrozen($cartId, $timeSlotId);
+        return true;
     }
-
-    /**
-     * @param int $cartId
-     * @param int $timeSlotId
-     * @return boolean
-     */
-    protected function isTimeSlotFrozen($cartId, $timeSlotId)
-    {
-        // Find out if there are some cart items with accepted <> "none" for the same cart and time slot
-        $q = Doctrine::getTable('ocTicket')->createQuery('tic', true)
-            ->leftJoin('tic.Gauge gau')
-            ->leftJoin('gau.Manifestation man')
-            ->leftJoin('man.OcTimeSlotManifestations tsm')
-            ->andWhere('tic.accepted <> ?', 'none')
-            ->andWhere('tic.oc_transaction_id = ?', $cartId)
-            ->andWhere('tsm.oc_time_slot_id = ?', $timeSlotId)
-        ;
-        $items = $q->count();
-
-        return $items > 0;
-    }
-
-
-    /**
-     * @param int $declinationId
-     * @return int | false if not found
-     */
-    protected function getTimeSlotId($declinationId)
-    {
-        $q = Doctrine::getTable('ocTimeSlot')->createQuery('ts')
-            ->select('ts.id')
-            ->leftJoin('ts.OcTimeSlotManifestations tsm')
-            ->leftJoin('tsm.Manifestation man')
-            ->leftJoin('man.Gauges gau')
-            ->andWhere('gau.id = ?', $declinationId)
-        ;
-        $timeSlot = $q->fetchArray();
-
-        if (!$timeSlot) {
-            return false;
-        }
-        return $timeSlot[0]['id'];
-    }
-
-    /**
-     * @param array $declinationIds
-     * @return array
-     */
-    protected function getTimeSlotIds($declinationIds)
-    {
-        $q = Doctrine::getTable('ocTimeSlot')->createQuery('ts')
-            ->select('ts.id')
-            ->leftJoin('ts.OcTimeSlotManifestations tsm')
-            ->leftJoin('tsm.Manifestation man')
-            ->leftJoin('man.Gauges gau')
-            ->andWhereIn('gau.id', $declinationIds)
-        ;
-        $timeSlots = $q->fetchArray();
-        $timeSlotIds = [];
-        foreach($timeSlots as $ts) {
-            $timeSlotIds[] = $ts['id'];
-        }
-        return array_unique($timeSlotIds);
-    }
-
 
     /**
      * @return @return Doctrine_Query
      */
     public function buildInitialQuery()
     {
+        // TODO: take into account the type of item targeted
         $token = $this->oauth->getToken();
         
-        return Doctrine_Query::create()
-            ->from('Ticket root')
-            ->leftJoin('root.Price Price')
-            ->leftJoin('root.Transaction Transaction')
-            ->leftJoin('Transaction.OsToken token')
-            ->andWhere('token.token = ?', $token->token)
-        ;
-    }
-
-    /**
-     * @param array $entity
-     * @param Doctrine_Record $record
-     * @return array
-     */
-    protected function postFormatEntity(array $entity, Doctrine_Record $record)
-    {
-        $entity['type'] = 'ticket';
-        $entity['quantity'] = 1;
-        $entity['declination'] = [
-            'id' => $record->gauge_id,
-            'code' => 'TODO',
-            'position' => 'TODO',
-            'translations' => 'TODO',
-        ];
-
-        $entity['units'] = [];
-        for($i=1; $i<=$entity['quantity']; $i++) {
-            $entity['units'][] = [
-                'id' => 'XXX', // TODO
-                'adjustments' => [],  // TODO
-                'adjustmentsTotal' => 0, // TODO
-            ];
+        switch ( $this->type ) {
+            case 'product':
+            case 'pass':
+                // TODO
+                return false;
+            default:
+                return Doctrine_Query::create()
+                    ->from('Ticket root')
+                    ->leftJoin('root.Price Price')
+                    ->leftJoin('root.Transaction Transaction')
+                    ->leftJoin('Transaction.OsToken token')
+                    ->andWhere('token.token = ?', $token->token)
+                ;
         }
-
-        $entity['unitsTotal'] = $entity['quantity'] * $entity['unitPrice'];
-        foreach($entity['units'] as $unit) {
-            $entity['unitsTotal'] += $unit['adjustmentsTotal'];
-        }
-
-        $entity['adjustments'] = []; // TODO
-        $entity['adjustmentsTotal'] = 0; // TODO
-        $entity['total'] = $entity['unitsTotal'] + $entity['adjustmentsTotal'];
-
-        return $entity;
     }
 }
