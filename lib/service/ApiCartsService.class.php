@@ -14,16 +14,16 @@ class ApiCartsService extends ApiEntityService
 {
 
     protected static $FIELD_MAPPING = [
-        'id'            => ['type' => 'single', 'value' => 'id'],
-        'items'         => ['type' => 'value', 'value' => []],
-        'itemsTotal'    => ['type' => 'value', 'value' => 0],
-        'adjustments'   => ['type' => 'value', 'value' => []],
-        'adjustmentsTotal' => ['type' => 'value', 'value' => 0],
-        'total'         => ['type' => 'value', 'value' => 0],
+        'id'            => ['type' => 'single', 'value' => 'id', 'updatable' => false],
+        'items'         => ['type' => 'value', 'value' => [], 'updatable' => false]],
+        'itemsTotal'    => ['type' => 'value', 'value' => 0, 'updatable' => false]],
+        'adjustments'   => ['type' => 'value', 'value' => [], 'updatable' => false]],
+        'adjustmentsTotal' => ['type' => 'value', 'value' => 0, 'updatable' => false]],
+        'total'         => ['type' => 'value', 'value' => 0, 'updatable' => false]],
         'customer'      => ['type' => null, 'value' => null],
-        'currencyCode'  => ['type' => 'value', 'value' => ''],
-        'localeCode'    => ['type' => 'value', 'value' => ''],
-        'checkoutState' => ['type' => null, 'value' => null],
+        'currencyCode'  => ['type' => 'value', 'value' => '', 'updatable' => false]],
+        'localeCode'    => ['type' => 'value', 'value' => '', 'updatable' => false]],
+        'checkoutState' => ['type' => null, 'value' => null, 'updatable' => false]],
     ];
 
     /**
@@ -112,7 +112,7 @@ class ApiCartsService extends ApiEntityService
     {
         // customer
         $entity['customer'] = new ArrayObject;
-        if ( false ) // TODO: remove and make it work
+        if ( false ) // TODO: remove and make it work, maybe using directly the field mapping
         if ($record->contact_id) {
             $entity['customer'] = $this->customersService->findOneById($record->contact_id);
         }
