@@ -100,7 +100,7 @@ abstract class ApiEntityService extends EvenementService implements ApiEntitySer
             $query['page'] = 1;
 
         $q = $this->buildInitialQuery();
-        
+        echo '$q';
         $model = explode(' ', $q->getDqlPart('from')[0])[0];
         $pager = new sfDoctrinePager($model, $query['limit']);
 

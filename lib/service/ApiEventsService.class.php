@@ -69,6 +69,7 @@ class ApiEventsService extends ApiEntityService {
         return Doctrine::getTable('Event')->createQuery('root')
                         ->leftJoin('root.Manifestations Manifestations')
         ;
+ 
     }
 
     protected function postFormatEntity(array $entity, Doctrine_Record $record) {
@@ -143,5 +144,34 @@ class ApiEventsService extends ApiEntityService {
 
         return true;
     }
+    public function deleteEvent($eventId)
+    {
+        // Check existence and access
+        if (!( $event = Doctrine::getTable('Event')->find($eventId) )) {
+            return false;
+        }
+   
+        return $event->delete();
+   
+   
+    }
+    public function createEvent($eventId, $data)
+    {
+        // Check existence and access
+        // if exist create not possible
+        if (( $event = Doctrine::getTable('Event')->find($eventId) )) {
+            return false;
+        }
 
+        // Validate data
+        if (!is_array($data)) {
+            return false;
+        }
+        
+        $accessor = new liApiPropertyAccessor;
+        $accessor->toRecord($data, $event, static::$FIELD_MAPPING);
+        $event->save();
+
+        return true;
+    }
 }

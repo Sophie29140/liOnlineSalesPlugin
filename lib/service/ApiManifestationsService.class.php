@@ -75,7 +75,6 @@ class ApiManifestationsService extends ApiEntityService
             ]
         ])
         ->fetchOne();
-
         if (false === $manifDotrineRec)
         {
             return null;
@@ -85,14 +84,14 @@ class ApiManifestationsService extends ApiEntityService
     }
 
     public function buildInitialQuery()
-    {
-        $q = $this->manifestationsService->buildQuery($this->oauth->getToken()->OsApplication->User, NULL, 'root');
-        // TODO: use the customer API service when it will be validated
+   {
+          $q = $this->manifestationsService->buildQuery($this->oauth->getToken()->OsApplication->User, NULL, 'root');
+                // TODO: use the customer API service when it will be validated
 //        $q = $this->manifestationsService->completeQueryWithContact($q, $this->oauth->getToken()->OcTransaction[0]->oc_professional_id
 //            ? $this->oauth->getToken()->OcTransaction[0]->OcProfessional->Professional->contact_id
 //            : NULL
 //        );
-        return $q;
+      return $q;
     }
 
     public function getMaxShownAvailableUnits()
@@ -171,14 +170,47 @@ class ApiManifestationsService extends ApiEntityService
     
     /**
      *
-     * @param int $eventId
+     * @param int $manifId
      * @param array $data
      * @return boolean
      */
     public function updateManif($manifId, $data)
     {
         // Check existence and access
-        if (!( $event = Doctrine::getTable('Manifestation')->find($manifId) )) {
+        if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
+            return false;
+        }
+       
+        // Validate data
+        if (!is_array($data)) {
+            return false;
+        }
+        
+        $accessor = new liApiPropertyAccessor;
+        var_dump($data);
+        $accessor->toRecord($data, $manif, static::$FIELD_MAPPING);
+        $manif->save();
+
+        return true;
+    }
+    public function deleteManif($manifId)
+    {
+        // Check existence and access
+        if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
+            return false;
+        }
+        // Check link existence with GAUGES
+        if (( $gauge = Doctrine::getTable('Gauge')->findOneByManifestation_id($manifId) )){
+            return false;
+        }
+        return $manif->delete();
+   
+   
+    }
+    public function createManif($manifId, $data)
+    {
+        // Check existence and access
+        if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
             return false;
         }
 
@@ -189,7 +221,7 @@ class ApiManifestationsService extends ApiEntityService
         
         $accessor = new liApiPropertyAccessor;
         $accessor->toRecord($data, $manif, static::$FIELD_MAPPING);
-        $event->save();
+        $manif->save();
 
         return true;
     }

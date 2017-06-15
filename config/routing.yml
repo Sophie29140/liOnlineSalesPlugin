@@ -40,7 +40,7 @@ os_api_picture:
     class: sfRequestRoute
     param: { module: osPicture, action: display }
     options:
-        credentials: tck-onlinesales-api-picture
+        credentials: tck-onlinechoices-api-picture
     requirements:
         id: \d+
         sf_method: [GET]
@@ -121,29 +121,57 @@ os_api_picture:
 ##
 ## MANIFESTATION
 ##
-#os_api_manifestations:
-#    url: /api/v2/manifestations
-#    class: sfRequestRoute
-#    param: { module: osApiManifestations, action: index }
-#    options:
-#        credentials: tck-onlinechoices-api-manifestations
-#    requirements:
-#        sf_method: [GET]
-#
-#os_api_manifestations_resource:
-#    url: /api/v2/manifestations/:id
-#    class: sfRequestRoute
-#    param: { module: osApiManifestations, action: resource }
-#    options:
-#        credentials: tck-onlinechoices-api-manifestations-show
-#    requirements:
-#        id: \d+
-#        sf_method: [GET]
-#
+os_api_manifestations_list:
+    url: /api/v2/manifestations
+    class: sfRequestRoute
+    param: { module: osApiManifestations, action: index }
+    options:
+        credentials: tck-onlinechoices-api-manifestations
+    requirements:
+        sf_method: [GET, POST]
+
+os_api_manifestations_resource:
+    url: /api/v2/manifestations/:id
+    class: sfRequestRoute
+    param: { module: osApiManifestations, action: resource }
+    options:
+        credentials: tck-onlinechoices-api-manifestations-show
+    requirements:
+        id: \d+
+        sf_method: [GET]
+        
+os_api_manifestations_edit:
+    url: /api/v2/manifestations/:id
+    class: sfRequestRoute
+    param: { module: osApiManifestations, action: resource }
+    options:
+        credentials: tck-onlinechoices-api-manifestations-edit
+    requirements:
+        id: \d+
+        sf_method: [POST]
+        
+os_api_manifestations_create:
+    url: /api/v2/manifestations/:id
+    class: sfRequestRoute
+    param: { module: osApiManifestations, action: resource }
+    options:
+        credentials: tck-onlinechoices-api-manifestations-create
+    requirements:
+        id: \d+
+        sf_method: [POST]
+        
+oos_api_manifestations__delete:
+    url: /api/v2/manifestations/:id
+    class: sfRequestRoute
+    param: { module: osApiManifestations, action: resource }
+    options:
+        credentials: tck-onlinechoices-api-manifestations-delete
+    requirements:
+        id: \d+
+        sf_method: [DELETE]
 ##
 ## ORDERS
 ##
-#
 os_api_orders:
     url: /api/v2/orders
     class: sfRequestRoute
@@ -345,7 +373,7 @@ os_api_events_list:
     class: sfRequestRoute
     param: { module: osApiEvents, action: index }
     options:
-        credentials: tck-onlinesales-api-events
+        credentials: tck-onlinechoices-api-events
     requirements:
         sf_method: [GET, POST]
 os_api_events_resource:
@@ -353,7 +381,7 @@ os_api_events_resource:
     class: sfRequestRoute
     param: { module: osApiEvents, action: resource }
     options:
-        credentials: tck-onlinesales-api-events-show
+        credentials: tck-onlinechoices-api-events-show
     requirements:
         id: \d+
         sf_method: [GET]
@@ -362,10 +390,30 @@ os_api_events_edit:
     class: sfRequestRoute
     param: { module: osApiEvents, action: resource }
     options:
-        credentials: tck-onlinesales-api-events-edit
+        credentials: tck-onlinechoices-api-events-edit
     requirements:
         id: \d+
         sf_method: [POST]
+
+os_api_events_create:
+    url: /api/v2/events/:id
+    class: sfRequestRoute
+    param: { module: osApiEvents, action: resource }
+    options:
+        credentials: tck-onlinechoices-api-events-create
+    requirements:
+        id: \d+
+        sf_method: [POST]
+        
+os_api_events_delete:
+    url: /api/v2/events/:id
+    class: sfRequestRoute
+    param: { module: osApiEvents, action: resource }
+    options:
+        credentials: tck-onlinechoices-api-events-delete
+    requirements:
+        id: \d+
+        sf_method: [DELETE]
 ##
 ## PAYMENTS
 ##
@@ -403,26 +451,25 @@ os_api_payments_resource:
 ##
 ## PRODUCTS
 ##
-#os_api_products:
-#    url: /api/v2/products
-#    class: sfRequestRoute
-#    param: { module: osApiProducts, action: index }
-#    options:
-#        credentials: tck-onlinechoices-api-products
-#    requirements:
-#        sf_method: [GET]
-#
-#os_api_products_resource:
-#    url: /api/v2/products/:id
-#    class: sfRequestRoute
-#    param: { module: osApiProducts, action: resource }
-#    options:
-#        credentials: tck-onlinechoices-api-products-show
-#    requirements:
-#        id: \d+
-#        sf_method: [GET]
-#
-#
+os_api_products:
+    url: /api/v2/products
+    class: sfRequestRoute
+    param: { module: osApiProducts, action: index }
+    options:
+        credentials: tck-onlinechoices-api-products
+    requirements:
+        sf_method: [GET]
+
+os_api_products_resource:
+    url: /api/v2/products/:id
+    class: sfRequestRoute
+    param: { module: osApiProducts, action: resource }
+    options:
+        credentials: tck-onlinechoices-api-products-show
+    requirements:
+        id: \d+
+        sf_method: [GET]
+
 ##
 ## PRODUCT CATEGORIES
 ##
@@ -439,24 +486,24 @@ os_api_payments_resource:
 ##
 ## PROMOTIONS
 ##
-#os_api_promotions:
-#    url: /api/v2/promotions
-#    class: sfRequestRoute
-#    param: { module: osApiPromotions, action: index }
-#    options:
-#        credentials: tck-onlinechoices-api-promotions
-#    requirements:
-#        sf_method: [GET]
-#
-#os_api_promotions_resource:
-#    url: /api/v2/promotions/:id
-#    class: sfRequestRoute
-#    param: { module: osApiPromotions, action: resource }
-#    options:
-#        credentials: tck-onlinechoices-api-promotions-show
-#    requirements:
-#        id: \d+
-#        sf_method: [GET]
+os_api_promotions:
+    url: /api/v2/promotions
+    class: sfRequestRoute
+    param: { module: osApiPromotions, action: index }
+    options:
+        credentials: tck-onlinechoices-api-promotions
+    requirements:
+        sf_method: [GET]
+
+os_api_promotions_resource:
+    url: /api/v2/promotions/:id
+    class: sfRequestRoute
+    param: { module: osApiPromotions, action: resource }
+    options:
+        credentials: tck-onlinechoices-api-promotions-show
+    requirements:
+        id: \d+
+        sf_method: [GET]
 
 #
 # AUTH
