@@ -12,5 +12,4 @@
  */
 abstract class PluginOsApplication extends BaseOsApplication
 {
-
 }

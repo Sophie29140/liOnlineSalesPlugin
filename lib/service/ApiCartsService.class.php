@@ -219,6 +219,6 @@ class ApiCartsService extends ApiEntityService
             ->leftJoin('root.Professional Professional')
             ->leftJoin('root.OsToken token')
             ->andWhere('token.token = ?', $token->token);
-        ;
+        
     }
 }

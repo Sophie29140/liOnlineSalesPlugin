@@ -11,7 +11,10 @@ return [
     'osApiOrders',
     'osApiCarts',
     'osApiCartItems',
-
+    'osApiEvents',
+    'osApiManifestations',
+    'osApiProducts',
+    'osApiPromotions',
   ],
   'filters' => [
     'exceptionCatcherFilter' => 'on',
