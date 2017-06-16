@@ -55,7 +55,7 @@ class osApiManifestationsActions extends apiActions
         /* @var $manifService ApiManifestationsService */
         $manifsService = $this->getService('api_manifestations_service');
         
-        $isSuccess = $manifsService->updateManif($manif_id, $request->getParameter('application/json'));
+        $isSuccess = $manifsService->update($manif_id, $request->getParameter('application/json'));
 
         if (!$isSuccess) {
             $status = ApiHttpStatus::BAD_REQUEST;
@@ -67,8 +67,8 @@ class osApiManifestationsActions extends apiActions
                 'message' => $message
                 ], $status);
     }
-    public function delete(sfWebRequest $request) {
-        
+    public function delete(sfWebRequest $request)
+    {
         $status = ApiHttpStatus::SUCCESS;
         $message = ApiHttpMessage::DELETE_SUCCESSFUL;
 
@@ -78,7 +78,7 @@ class osApiManifestationsActions extends apiActions
         $manifService = $this->getService('api_manifestations_service');
         
         
-        $isSuccess = $manifService->deleteManif($manif_id);
+        $isSuccess = $manifService->delete($manif_id);
         if (!$isSuccess) {
             $status = ApiHttpStatus::BAD_REQUEST;
             $message = ApiHttpMessage::DELETE_FAILED;
@@ -89,7 +89,8 @@ class osApiManifestationsActions extends apiActions
                 ], $status);
     }
     
-    public function create(sfWebRequest $request) {
-        
+    public function create(sfWebRequest $request)
+    {
+        die('create');
     }
 }

@@ -84,8 +84,8 @@ class ApiManifestationsService extends ApiEntityService
     }
 
     public function buildInitialQuery()
-   {
-          $q = $this->manifestationsService->buildQuery($this->oauth->getToken()->OsApplication->User, NULL, 'root');
+    {
+      $q = $this->manifestationsService->buildQuery($this->oauth->getToken()->OsApplication->User, NULL, 'root');
                 // TODO: use the customer API service when it will be validated
 //        $q = $this->manifestationsService->completeQueryWithContact($q, $this->oauth->getToken()->OcTransaction[0]->oc_professional_id
 //            ? $this->oauth->getToken()->OcTransaction[0]->OcProfessional->Professional->contact_id
@@ -174,7 +174,7 @@ class ApiManifestationsService extends ApiEntityService
      * @param array $data
      * @return boolean
      */
-    public function updateManif($manifId, $data)
+    public function update($manifId, $data)
     {
         // Check existence and access
         if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
@@ -193,7 +193,7 @@ class ApiManifestationsService extends ApiEntityService
 
         return true;
     }
-    public function deleteManif($manifId)
+    public function delete($manifId)
     {
         // Check existence and access
         if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
@@ -207,8 +207,9 @@ class ApiManifestationsService extends ApiEntityService
    
    
     }
-    public function createManif($manifId, $data)
+    public function create($manifId, $data)
     {
+        die('create in service');
         // Check existence and access
         if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
             return false;

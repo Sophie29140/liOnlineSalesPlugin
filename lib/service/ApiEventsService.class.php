@@ -126,7 +126,7 @@ class ApiEventsService extends ApiEntityService {
      * @param array $data
      * @return boolean
      */
-    public function updateEvent($eventId, $data)
+    public function update($eventId, $data)
     {
         // Check existence and access
         if (!( $event = Doctrine::getTable('Event')->find($eventId) )) {
@@ -139,12 +139,12 @@ class ApiEventsService extends ApiEntityService {
         }
         
         $accessor = new liApiPropertyAccessor;
-        $accessor->toRecord($data, $event, static::$FIELD_MAPPING);
+        $event = $accessor->toRecord($data, $event, static::$FIELD_MAPPING);
         $event->save();
 
         return true;
     }
-    public function deleteEvent($eventId)
+    public function delete($eventId)
     {
         // Check existence and access
         if (!( $event = Doctrine::getTable('Event')->find($eventId) )) {
@@ -155,7 +155,7 @@ class ApiEventsService extends ApiEntityService {
    
    
     }
-    public function createEvent($eventId, $data)
+    public function create($eventId, $data)
     {
         // Check existence and access
         // if exist create not possible
