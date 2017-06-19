@@ -16,14 +16,15 @@ class ApiEventsService extends ApiEntityService {
     protected $translationService;
     protected $oauth;
     protected static $FIELD_MAPPING = [
-        'id' => ['type' => 'single', 'value' => 'id'],
-        'metaEvent' => ['type' => 'sub-record', 'value' => null],
-        'metaEvent.id' => ['type' => 'single', 'value' => 'MetaEvent.id'],
-        'metaEvent.translations' => ['type' => 'collection', 'value' => 'MetaEvent.Translation'],
-        'category' => ['type' => 'single', 'value' => 'EventCategory.name'],
-        'translations' => ['type' => 'collection', 'value' => 'Translation'],
-        'imageURL' => ['type' => null, 'value' => null],
-        'manifestations' => ['type' => 'value', 'value' => []],
+        'id'            => ['type' => 'single', 'value' => 'id', 'updatable' => false],
+        //'metaEvent'     => ['type' => 'sub-record', 'value' => null],
+        'metaEvent.id'  => ['type' => 'single', 'value' => 'MetaEvent.id', 'for-update' => 'meta_event_id'],
+        'metaEvent.translations' => ['type' => 'collection', 'value' => 'MetaEvent.Translation', 'updatable' => false],
+        'category'      => ['type' => 'single', 'value' => 'EventCategory.name', 'updatable' => false],
+        'translations'  => ['type' => 'collection', 'value' => 'Translation'],
+        'imageId'       => ['type' => 'single', 'value' => 'picture_id'],
+        'imageURL'      => ['type' => null, 'value' => null, 'updatable' => false],
+        'manifestations'=> ['type' => 'value', 'value' => [], 'updatable' => false],
     ];
 
     /**
