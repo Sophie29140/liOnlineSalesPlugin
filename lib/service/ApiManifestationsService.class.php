@@ -47,46 +47,10 @@ class ApiManifestationsService extends ApiEntityService
         //'gauges.prices.currencyCode' => null,
     ];
 
-    /**
-     *
-     * @return array
-     */
-    public function findAll(array $query)
-    {
-        $q = $this->buildQuery($query);
-        $manifestations = $q->execute();
-
-        return $this->getFormattedEntities($manifestations);
-    }
-
-    /**
-     *
-     * @param int $manif_id
-     * @return array | null
-     */
-    public function findOneById($manif_id)
-    {
-        $manifDotrineRec = $this->buildQuery([
-            'criteria' => [
-                'id' => [
-                    'value' => $manif_id,
-                    'type'  => 'equal',
-                ],
-            ]
-        ])
-        ->fetchOne();
-        if (false === $manifDotrineRec)
-        {
-            return null;
-        }
-
-        return $this->getFormattedEntity($manifDotrineRec);
-    }
-
     public function buildInitialQuery()
     {
       $q = $this->manifestationsService->buildQuery($this->oauth->getToken()->OsApplication->User, NULL, 'root');
-                // TODO: use the customer API service when it will be validated
+      // TODO: use the customer API service when it will be validated
 //        $q = $this->manifestationsService->completeQueryWithContact($q, $this->oauth->getToken()->OcTransaction[0]->oc_professional_id
 //            ? $this->oauth->getToken()->OcTransaction[0]->OcProfessional->Professional->contact_id
 //            : NULL
@@ -168,63 +132,9 @@ class ApiManifestationsService extends ApiEntityService
         return $this->oauth;
     }
     
-    /**
-     *
-     * @param int $manifId
-     * @param array $data
-     * @return boolean
-     */
-    public function update($manifId, $data)
+    public function getBaseEntityName()
     {
-        // Check existence and access
-        if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
-            return false;
-        }
-       
-        // Validate data
-        if (!is_array($data)) {
-            return false;
-        }
-        
-        $accessor = new liApiPropertyAccessor;
-        var_dump($data);
-        $accessor->toRecord($data, $manif, static::$FIELD_MAPPING);
-        $manif->save();
-
-        return true;
-    }
-    public function delete($manifId)
-    {
-        // Check existence and access
-        if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
-            return false;
-        }
-        // Check link existence with GAUGES
-        if (( $gauge = Doctrine::getTable('Gauge')->findOneByManifestation_id($manifId) )){
-            return false;
-        }
-        return $manif->delete();
-   
-   
-    }
-    public function create($manifId, $data)
-    {
-        die('create in service');
-        // Check existence and access
-        if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
-            return false;
-        }
-
-        // Validate data
-        if (!is_array($data)) {
-            return false;
-        }
-        
-        $accessor = new liApiPropertyAccessor;
-        $accessor->toRecord($data, $manif, static::$FIELD_MAPPING);
-        $manif->save();
-
-        return true;
+        return 'Manifestation';
     }
 }
 

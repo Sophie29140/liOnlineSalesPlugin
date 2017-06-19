@@ -32,42 +32,9 @@ class ApiEventsService extends ApiEntityService {
      */
     protected $manifestationsService;
 
-    /**
-     * 
-     * @return array
-     */
-    public function findAll(array $query) {
-        $q = $this->buildQuery($query);
-        $events = $q->execute();
-
-        return $this->getFormattedEntities($events);
-    }
-
-    /**
-     *
-     * @param int $event_id
-     * @return array | null
-     */
-    public function findOneById($event_id) {
-        $eventDotrineRec = $this->buildQuery([
-                    'criteria' => [
-                        'id' => [
-                            'value' => $event_id,
-                            'type' => 'equal',
-                        ],
-                    ]
-                ])
-                ->fetchOne();
-
-        if (false === $eventDotrineRec) {
-            return new ArrayObject;
-        }
-
-        return $this->getFormattedEntity($eventDotrineRec);
-    }
 
     public function buildInitialQuery() {
-        return Doctrine::getTable('Event')->createQuery('root')
+        return parent::buildInitialQuery()
                         ->leftJoin('root.Manifestations Manifestations')
         ;
  
@@ -121,58 +88,9 @@ class ApiEventsService extends ApiEntityService {
     public function getOAuthService() {
         return $this->oauth;
     }
-    /**
-     *
-     * @param int $eventId
-     * @param array $data
-     * @return boolean
-     */
-    public function update($eventId, $data)
+    
+    public function getBaseEntityName()
     {
-        // Check existence and access
-        if (!( $event = Doctrine::getTable('Event')->find($eventId) )) {
-            return false;
-        }
-
-        // Validate data
-        if (!is_array($data)) {
-            return false;
-        }
-        
-        $accessor = new liApiPropertyAccessor;
-        $event = $accessor->toRecord($data, $event, static::$FIELD_MAPPING);
-        $event->save();
-
-        return true;
-    }
-    public function delete($eventId)
-    {
-        // Check existence and access
-        if (!( $event = Doctrine::getTable('Event')->find($eventId) )) {
-            return false;
-        }
-   
-        return $event->delete();
-   
-   
-    }
-    public function create($eventId, $data)
-    {
-        // Check existence and access
-        // if exist create not possible
-        if (( $event = Doctrine::getTable('Event')->find($eventId) )) {
-            return false;
-        }
-
-        // Validate data
-        if (!is_array($data)) {
-            return false;
-        }
-        
-        $accessor = new liApiPropertyAccessor;
-        $accessor->toRecord($data, $event, static::$FIELD_MAPPING);
-        $event->save();
-
-        return true;
+        return 'Event';
     }
 }
