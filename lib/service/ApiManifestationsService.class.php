@@ -47,41 +47,39 @@ class ApiManifestationsService extends ApiEntityService
         //'gauges.prices.currencyCode' => null,
     ];
 
-    /**
-     *
-     * @return array
-     */
-    public function findAll(array $query)
-    {
-        $q = $this->buildQuery($query);
-        $manifestations = $q->execute();
-
-        return $this->getFormattedEntities($manifestations);
-    }
-
-    /**
-     *
-     * @param int $manif_id
-     * @return array | null
-     */
-    public function findOneById($manif_id)
-    {
-        $manifDotrineRec = $this->buildQuery([
-            'criteria' => [
-                'id' => [
-                    'value' => $manif_id,
-                    'type'  => 'equal',
-                ],
-            ]
-        ])
-        ->fetchOne();
-        if (false === $manifDotrineRec)
-        {
-            return null;
-        }
-
-        return $this->getFormattedEntity($manifDotrineRec);
-    }
+//    /**
+//     *
+//     * @return array
+//     */
+//    public function findAll(array $query)
+//    {
+//        $q = $this->buildQuery($query);
+//        $manifestations = $q->execute();
+//        return $this->getFormattedEntities($manifestations);
+//    }
+//
+//    /**
+//     *
+//     * @param int $manif_id
+//     * @return array | null
+//     */
+//    public function findOneById($manif_id)
+//    {
+//        $manifDotrineRec = $this->buildQuery([
+//            'criteria' => [
+//                'id' => [
+//                    'value' => $manif_id,
+//                    'type'  => 'equal',
+//                ],
+//            ]
+//        ])
+//        ->fetchOne();
+//        if (false === $manifDotrineRec)
+//        {
+//            return null;
+//        }
+//        return $this->getFormattedEntity($manifDotrineRec);
+//    }
 
     public function buildInitialQuery()
    {
@@ -180,14 +178,13 @@ class ApiManifestationsService extends ApiEntityService
         if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
             return false;
         }
-       
+
         // Validate data
         if (!is_array($data)) {
             return false;
         }
         
         $accessor = new liApiPropertyAccessor;
-        var_dump($data);
         $accessor->toRecord($data, $manif, static::$FIELD_MAPPING);
         $manif->save();
 

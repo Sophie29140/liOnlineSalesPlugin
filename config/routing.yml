@@ -160,7 +160,7 @@ os_api_manifestations_create:
         id: \d+
         sf_method: [POST]
         
-oos_api_manifestations__delete:
+os_api_manifestations_delete:
     url: /api/v2/manifestations/:id
     class: sfRequestRoute
     param: { module: osApiManifestations, action: resource }
@@ -471,18 +471,17 @@ os_api_products_resource:
         sf_method: [GET]
 
 ##
-## PRODUCT CATEGORIES
+## PRODUCTS CATEGORIES
 ##
-#os_api_product_categories:
-#    url: /api/v2/productcategories
-#    class: sfRequestRoute
-#    param: { module: osApiProductCategories, action: index }
-#    options:
-#        credentials: tck-onlinechoices-api-product-categories
-#    requirements:
-#        sf_method: [GET]
-#
-#
+os_api_productcategories:
+    url: /api/v2/productcategories
+    class: sfRequestRoute
+    param: { module: osApiProductCategories, action: index }
+    options:
+        credentials: tck-onlinechoices-api-products-categories
+    requirements:
+        sf_method: [GET]
+
 ##
 ## PROMOTIONS
 ##

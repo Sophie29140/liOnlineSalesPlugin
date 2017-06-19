@@ -14,14 +14,18 @@ class ApiCartsService extends ApiEntityService
 {
 
     protected static $FIELD_MAPPING = [
-        'id'            => ['type' => 'single', 'value' => 'id'],
-        'items'         => ['type' => null, 'value' => null],
-        'itemsTotal'    => ['type' => null, 'value' => null],
-        'total'         => ['type' => null, 'value' => null],
+
+        'id'            => ['type' => 'single', 'value' => 'id', 'updatable' => false],
+        'items'         => ['type' => 'value', 'value' => [], 'updatable' => false],
+        'itemsTotal'    => ['type' => 'value', 'value' => 0, 'updatable' => false],
+        'adjustments'   => ['type' => 'value', 'value' => [], 'updatable' => false],
+        'adjustmentsTotal' => ['type' => 'value', 'value' => 0, 'updatable' => false],
+        'total'         => ['type' => 'value', 'value' => 0, 'updatable' => false],
         'customer'      => ['type' => null, 'value' => null],
-        'currencyCode'  => ['type' => null, 'value' => null],
-        'localeCode'    => ['type' => null, 'value' => null],
-        'checkoutState' => ['type' => null, 'value' => null],
+        'currencyCode'  => ['type' => 'value', 'value' => '', 'updatable' => false],
+        'localeCode'    => ['type' => 'value', 'value' => '', 'updatable' => false],
+        'checkoutState' => ['type' => null, 'value' => null, 'updatable' => false],
+
     ];
 
     /**

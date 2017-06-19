@@ -10,11 +10,12 @@
  *
  * @author Sophie MICHEL <sophie.michel@libre-informatique.fr>
  */
-class osApiManifestationsActions extends apiActions
+class osApiProductsActions extends apiActions
 {
-    public function getMyService()
+     public function getMyService()
     {
-        return $this->getService('api_manifestations_service');
+        return $this->getService('api_products_service');
     }
 
+    
 }

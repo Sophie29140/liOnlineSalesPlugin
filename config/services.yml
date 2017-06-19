@@ -49,6 +49,10 @@ all:
             calls:
                 - ['setTranslationService', ['@api_translation_service']]
                 - ['setOAuthService', ['@api_oauth_service']]
+        api_productcategories_service:
+            class: ApiProductCategoriesService 
+            calls:
+                - ['setTranslationService', ['@api_translation_service']]
         api_promotions_service:
             class: ApiPromotionsService
             calls:
