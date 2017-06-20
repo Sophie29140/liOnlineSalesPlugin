@@ -38,4 +38,6 @@ class ApiPicturesService extends ApiEntityService
     {
         return 'Picture';
     }
+     
+    // TODO: test the create endpoint!
 }

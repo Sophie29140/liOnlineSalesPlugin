@@ -36,7 +36,7 @@ os_api_logout:
 ## PICTURE
 ##
 os_api_picture_list:
-    url: /api/v2/picture
+    url: /api/v2/pictures
     class: sfRequestRoute
     param: { module: osApiPicture, action: index }
     options:
@@ -45,14 +45,23 @@ os_api_picture_list:
         id: \d+
         sf_method: [GET]
 os_api_picture_resource:
-    url: /api/v2/picture/:id
+    url: /api/v2/pictures/:id
     class: sfRequestRoute
-    param: { module: osPicture, action: display }
+    param: { module: osApiPicture, action: display }
     options:
         credentials: tck-onlinesales-api-picture
     requirements:
         id: \d+
         sf_method: [GET]
+os_api_picture_create:
+    url: /api/v2/pictures/:id
+    class: sfRequestRoute
+    param: { module: osApiPicture, action: index }
+    options:
+        credentials: tck-onlinesales-api-picture
+    requirements:
+        id: \d+
+        sf_method: [POST]
 
 ##
 ## CUSTOMER
