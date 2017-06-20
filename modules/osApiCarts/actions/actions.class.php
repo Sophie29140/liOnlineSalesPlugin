@@ -96,9 +96,9 @@ class osApiCartsActions extends apiActions
 
         $cart_id = $request->getParameter('cart_id');
 
-        /* @var $cartService ApiCartsService */
-        $cartService = $this->getService('api_carts_service');
-        $isSuccess = $cartService->deleteCart($cart_id);
+        /* @var $cartsService ApiCartsService */
+        $cartsService = $this->getService('api_carts_service');
+        $isSuccess = $cartsService->deleteCart($cart_id);
 
         if (!$isSuccess) {
             $status = ApiHttpStatus::BAD_REQUEST;
