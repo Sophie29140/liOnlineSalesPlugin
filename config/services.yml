@@ -38,6 +38,15 @@ all:
                 - ['setApiManifestationsService', ['@api_manifestations_service']]
                 - ['setTranslationService', ['@api_translation_service']]
                 - ['setOAuthService', ['@api_oauth_service']]
+        api_meta_events_service:
+            class: ApiMetaEventsService
+            calls:
+                - ['setTranslationService', ['@api_translation_service']]
+                - ['setOAuthService', ['@api_oauth_service']]
+        api_event_categories_service:
+            class: ApiEventCategoriesService
+            calls:
+                - ['setOAuthService', ['@api_oauth_service']]
         api_manifestations_service:
             class: ApiManifestationsService
             calls:
