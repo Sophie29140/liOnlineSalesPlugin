@@ -15,27 +15,36 @@ os_api_cors:
 ##
 ## LOGIN
 ##
-#os_api_login:
-#    url: /api/v2/login
-#    class: sfRequestRoute
-#    param: { module: osApiCustomers, action: login }
-#    options:
-#        credentials: tck-onlinesales-api-login
-#    requirements:
-#        sf_method: [GET, POST]
-#os_api_logout:
-#    url: /api/v2/logout
-#    class: sfRequestRoute
-#    param: { module: osApiCustomers, action: logout }
-#    options:
-#        credentials: tck-onlinesales-api-logout
-#    requirements:
-#        sf_method: [GET, POST]
-#
+os_api_login:
+    url: /api/v2/login
+    class: sfRequestRoute
+    param: { module: osApiCustomers, action: login }
+    options:
+        credentials: tck-onlinesales-api-login
+    requirements:
+        sf_method: [GET, POST]
+os_api_logout:
+    url: /api/v2/logout
+    class: sfRequestRoute
+    param: { module: osApiCustomers, action: logout }
+    options:
+        credentials: tck-onlinesales-api-logout
+    requirements:
+        sf_method: [GET, POST]
+
 ##
 ## PICTURE
 ##
-os_api_picture:
+os_api_picture_list:
+    url: /api/v2/picture
+    class: sfRequestRoute
+    param: { module: osApiPicture, action: index }
+    options:
+        credentials: tck-onlinesales-api-picture
+    requirements:
+        id: \d+
+        sf_method: [GET]
+os_api_picture_resource:
     url: /api/v2/picture/:id
     class: sfRequestRoute
     param: { module: osPicture, action: display }
@@ -48,76 +57,76 @@ os_api_picture:
 ##
 ## CUSTOMER
 ##
-#os_api_customers_list:
-#    url: /api/v2/customers
-#    class: sfRequestRoute
-#    param: { module: osApiCustomers, action: index }
-#    options:
-#        credentials: tck-onlinesales-api-customers
-#    requirements:
-#        sf_method: [GET]
-#os_api_customers_create:
-#    url: /api/v2/customers
-#    class: sfRequestRoute
-#    param: { module: osApiCustomers, action: index }
-#    options:
-#        credentials: tck-onlinesales-api-customers-new
-#    requirements:
-#        sf_method: [POST]
-#
-#os_api_customers_resource:
-#    url: /api/v2/customers/:id
-#    class: sfRequestRoute
-#    param: { module: osApiCustomers, action: resource }
-#    options:
-#        credentials: tck-onlinesales-api-customers-show
-#    requirements:
-#        id: \d+
-#        sf_method: [GET]
-#os_api_customers_resource_edit:
-#    url: /api/v2/customers/:id
-#    class: sfRequestRoute
-#    param: { module: osApiCustomers, action: resource }
-#    options:
-#        credentials: tck-onlinesales-api-customers-edit
-#    requirements:
-#        id: \d+
-#        sf_method: [POST]
-#os_api_customers_resource_delete:
-#    url: /api/v2/customers/:id
-#    class: sfRequestRoute
-#    param: { module: osApiCustomers, action: resource }
-#    options:
-#        credentials: tck-onlinesales-api-customers-del
-#    requirements:
-#        id: \d+
-#        sf_method: [DELETE]
-#
+os_api_customers_list:
+    url: /api/v2/customers
+    class: sfRequestRoute
+    param: { module: osApiCustomers, action: index }
+    options:
+        credentials: tck-onlinesales-api-customers
+    requirements:
+        sf_method: [GET]
+os_api_customers_create:
+    url: /api/v2/customers
+    class: sfRequestRoute
+    param: { module: osApiCustomers, action: index }
+    options:
+        credentials: tck-onlinesales-api-customers-new
+    requirements:
+        sf_method: [POST]
+
+os_api_customers_resource:
+    url: /api/v2/customers/:id
+    class: sfRequestRoute
+    param: { module: osApiCustomers, action: resource }
+    options:
+        credentials: tck-onlinesales-api-customers-show
+    requirements:
+        id: \d+
+        sf_method: [GET]
+os_api_customers_resource_edit:
+    url: /api/v2/customers/:id
+    class: sfRequestRoute
+    param: { module: osApiCustomers, action: resource }
+    options:
+        credentials: tck-onlinesales-api-customers-edit
+    requirements:
+        id: \d+
+        sf_method: [POST]
+os_api_customers_resource_delete:
+    url: /api/v2/customers/:id
+    class: sfRequestRoute
+    param: { module: osApiCustomers, action: resource }
+    options:
+        credentials: tck-onlinesales-api-customers-del
+    requirements:
+        id: \d+
+        sf_method: [DELETE]
+
 ##
 ## CUSTOMER ORDER
 ##
-#os_api_customers_orders:
-#    url: /api/v2/customers/:id/orders
-#    class: sfRequestRoute
-#    param: { module: osApiCustomerOrders, action: index }
-#    options:
-#        credentials: tck-onlinesales-api-orders
-#    requirements:
-#        id: \d+
-#        sf_method: [GET]
-#
-#os_api_customers_orders_resource:
-#    url: /api/v2/customers/:id/orders/:order_id
-#    class: sfRequestRoute
-#    param: { module: osApiCustomerOrders, action: resource }
-#    options:
-#        credentials: tck-onlinesales-api-orders-show
-#    requirements:
-#        id: \d+
-#        order_id: \d+
-#        sf_method: [GET]
-#
-#
+os_api_customers_orders:
+    url: /api/v2/customers/:id/orders
+    class: sfRequestRoute
+    param: { module: osApiCustomerOrders, action: index }
+    options:
+        credentials: tck-onlinesales-api-orders
+    requirements:
+        id: \d+
+        sf_method: [GET]
+
+os_api_customers_orders_resource:
+    url: /api/v2/customers/:id/orders/:order_id
+    class: sfRequestRoute
+    param: { module: osApiCustomerOrders, action: resource }
+    options:
+        credentials: tck-onlinesales-api-orders-show
+    requirements:
+        id: \d+
+        order_id: \d+
+        sf_method: [GET]
+
+
 ##
 ## MANIFESTATION
 ##

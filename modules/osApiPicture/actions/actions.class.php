@@ -10,7 +10,7 @@
  *
  * @author Baptiste SIMON <baptiste.simon@libre-informatique.fr>
  */
-class osPictureActions extends sfActions
+class osApiPictureActions extends apiActions
 {
   public function executeDisplay(sfWebRequest $request)
   {
@@ -34,5 +34,10 @@ class osPictureActions extends sfActions
     if ( $this->picture->content_encoding ) {
       $this->getResponse()->addHttpMeta('Content-Encoding', $this->picture->content_encoding);
     }
+  }
+  
+  public function getMyService()
+  {
+    return $this->getService('api_pictures_service');
   }
 }

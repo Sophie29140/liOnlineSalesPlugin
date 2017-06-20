@@ -62,5 +62,12 @@ all:
             class: ApiPromotionsService
             calls:
                 - ['setOAuthService', ['@api_oauth_service']]
-               
+        api_customers_service:
+            class: ApiCustomersService
+            calls:
+                - ['setOAuthService', ['@api_oauth_service']]
+        api_pictures_service:
+            class: ApiPicturesService
+            calls:
+                - ['setOAuthService', ['@api_oauth_service']]
 
