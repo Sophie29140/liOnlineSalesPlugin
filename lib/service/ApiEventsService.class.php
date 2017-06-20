@@ -33,14 +33,16 @@ class ApiEventsService extends ApiEntityService {
     protected $manifestationsService;
 
 
-    public function buildInitialQuery() {
+    public function buildInitialQuery()
+    {
         return parent::buildInitialQuery()
-                        ->leftJoin('root.Manifestations Manifestations')
+            ->leftJoin('root.Manifestations Manifestations')
         ;
  
     }
 
-    protected function postFormatEntity(array $entity, Doctrine_Record $record) {
+    protected function postFormatEntity(array $entity, Doctrine_Record $record)
+    {
         // translations
         $this->translationService
                 ->reformat($entity['translations'])
@@ -72,20 +74,24 @@ class ApiEventsService extends ApiEntityService {
         return $entity;
     }
 
-    public function setApiManifestationsService(ApiManifestationsService $manifestations) {
+    public function setApiManifestationsService(ApiManifestationsService $manifestations)
+    {
         $this->manifestationsService = $manifestations;
     }
 
-    public function setTranslationService(ApiTranslationService $i18n) {
+    public function setTranslationService(ApiTranslationService $i18n)
+    {
         $this->translationService = $i18n;
         return $this;
     }
 
-    public function setOAuthService(ApiOAuthService $service) {
+    public function setOAuthService(ApiOAuthService $service)
+    {
         $this->oauth = $service;
     }
 
-    public function getOAuthService() {
+    public function getOAuthService()
+    {
         return $this->oauth;
     }
     
