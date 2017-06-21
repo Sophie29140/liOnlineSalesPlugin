@@ -40,7 +40,8 @@ class ApiManifestationsService extends ApiEntityService
         //'gauges'            => ['type' => 'collection', 'value' => null],
         'gauges.id'         => ['type' => 'collection.single', 'value' => 'Gauges.id'],
         'gauges.name'       => ['type' => 'collection.single', 'value' => 'Gauges.Workspace.name'],
-        'gauges.availableUnits' => ['type' => 'collection.single', 'value' => 'Gauges.free'],
+        'gauges.availableUnits' => ['type' => 'collection.single', 'value' => 'Gauges.free', 'updatable' => false],
+        'gauges.total'      => ['type' => 'collection.single', 'value' => 'Gauges.value'],
         //'gauges.prices.id' => ['type' => 'single', 'value' => 'Gauges.Prices.id'],
         //'gauges.prices.translations' => ['type' => 'single', 'value' => 'Gauges.Prices.Translation'],
         //'gauges.prices.value' => ['type' => 'single', 'value' => 'Gauges.Prices.value'],
@@ -106,7 +107,7 @@ class ApiManifestationsService extends ApiEntityService
         // imageURL
         if ( $entity['event']['imageId'] ) {
             sfContext::getInstance()->getConfiguration()->loadHelpers(array('Url'));
-            $entity['event']['imageURL'] = url_for('@os_api_picture?id='.$entity['event']['imageId']);
+            $entity['event']['imageURL'] = url_for('@os_api_pictures_resource?id='.$entity['event']['imageId']);
         }
 
         return $entity;

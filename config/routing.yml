@@ -35,28 +35,28 @@ os_api_logout:
 ##
 ## PICTURE
 ##
-os_api_picture_list:
+os_api_pictures_list:
     url: /api/v2/pictures
     class: sfRequestRoute
-    param: { module: osApiPicture, action: index }
+    param: { module: osApiPictures, action: index }
     options:
         credentials: tck-onlinesales-api-picture
     requirements:
         id: \d+
         sf_method: [GET]
-os_api_picture_resource:
+os_api_pictures_resource:
     url: /api/v2/pictures/:id
     class: sfRequestRoute
-    param: { module: osApiPicture, action: display }
+    param: { module: osApiPictures, action: display }
     options:
         credentials: tck-onlinesales-api-picture
     requirements:
         id: \d+
         sf_method: [GET]
-os_api_picture_create:
+os_api_pictures_create:
     url: /api/v2/pictures/:id
     class: sfRequestRoute
-    param: { module: osApiPicture, action: index }
+    param: { module: osApiPictures, action: index }
     options:
         credentials: tck-onlinesales-api-picture
     requirements:
@@ -82,7 +82,6 @@ os_api_customers_create:
         credentials: tck-onlinesales-api-customers-new
     requirements:
         sf_method: [POST]
-
 os_api_customers_resource:
     url: /api/v2/customers/:id
     class: sfRequestRoute

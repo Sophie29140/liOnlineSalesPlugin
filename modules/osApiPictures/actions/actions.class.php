@@ -10,7 +10,7 @@
  *
  * @author Baptiste SIMON <baptiste.simon@libre-informatique.fr>
  */
-class osApiPictureActions extends apiActions
+class osApiPicturesActions extends apiActions
 {
   public function executeDisplay(sfWebRequest $request)
   {

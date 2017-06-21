@@ -50,7 +50,7 @@ class ApiEventsService extends ApiEntityService {
 
         // imageURL
         sfContext::getInstance()->getConfiguration()->loadHelpers(array('Url'));
-        $entity['imageURL'] = url_for('@os_api_picture?id=' . $entity['id']);
+        $entity['imageURL'] = url_for('@os_api_pictures_resource?id=' . $entity['id']);
 
         // manifestations
         $query = [

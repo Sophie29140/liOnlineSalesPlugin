@@ -34,7 +34,7 @@ class ApiOAuthService extends EvenementService
         $apiKey = preg_replace('/^Bearer\s+/', '', $headerValue);
         $this->token = $this->findRegisteredTokenByApiKey($apiKey);
 
-        if ( null === $this->token || !$this->token instanceof OsToken) {
+        if ( null === $this->token || !$this->token instanceof OsToken ) {
             throw new liApiAuthException('Invalid API authentication');
         }
         return true;
