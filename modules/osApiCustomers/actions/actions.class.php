@@ -1,5 +1,4 @@
 <?php
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,11 +10,12 @@
  *
  * @author Sophie MICHEL <sophie.michel@libre-informatique.fr>
  */
-class osApiEventsActions extends apiActions {
-
-    public function getMyService()
+class osApiCustomersActions extends apiActions
+{
+     public function getMyService()
     {
-        return $this->getService('api_events_service');
+        return $this->getService('api_customers_service');
     }
 
+    
 }

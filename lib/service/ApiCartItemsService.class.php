@@ -466,9 +466,8 @@ class ApiCartItemsService extends ApiEntityService
     public function buildInitialQuery()
     {
         $token = $this->oauth->getToken();
-        
-        return Doctrine_Query::create()
-            ->from('Ticket root')
+       
+        return parent::buildInitialQuery()
             ->leftJoin('root.Price Price')
             ->leftJoin('root.Transaction Transaction')
             ->leftJoin('Transaction.OsToken token')
@@ -512,4 +511,12 @@ class ApiCartItemsService extends ApiEntityService
 
         return $entity;
     }
+
+    public function getBaseEntityName() 
+    {
+        return 'Ticket';
+    }
+
+   
+
 }

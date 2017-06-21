@@ -11,13 +11,13 @@
  *
  * @author Sophie MICHEL <sophie.michel@libre-informatique.fr>
  */
-class ApiProductCategoriesService  extends ApiEntityService {
+class ApiEventCategoriesService  extends ApiEntityService {
     
     protected $translationService;
     protected $oauth;
     protected static $FIELD_MAPPING = [
-        'id'                    => ['type' => 'single', 'value' => 'id', 'updatable' => false],
-        'translations'          => ['type' => 'collection', 'value' => 'Translation', 'updatable' => false],
+        'id'            => ['type' => 'single', 'value' => 'id', 'updatable' => false],
+        'name'          => ['type' => 'single', 'value' => 'name', 'updatable' => false],
                 
     ];
       
@@ -40,25 +40,22 @@ class ApiProductCategoriesService  extends ApiEntityService {
         return $this->oauth;
     }
     
-    public function setProductCategoryService(ProductCategoryService $service)
+    public function setEventCategoryService(EventCategoryService $service)
     {
-        $this->productsCategoryService = $service;
+        $this->eventsCategoryService = $service;
     }
     public function getMaxShownAvailableUnits()
     {
         return 10;
     }
     protected function postFormatEntity(array $entity, Doctrine_Record $product) {
-        // translations
-        $this->translationService
-                ->reformat($entity['translations'])
-         ;
+      
        return $entity;
      }
 
     public function getBaseEntityName() 
     {
-        return 'ProductCategory';
+        return 'EventCategory';
     }
 
 }

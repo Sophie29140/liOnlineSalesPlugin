@@ -66,45 +66,6 @@ class ApiCartsService extends ApiEntityService
     {
         $this->customersService = $service;
     }
-
-    /**
-     *
-     * @param array $query
-     * @return array
-     */
-    public function findAll($query)
-    {
-        $q = $this->buildQuery($query);
-        $cartDotrineCol = $q->execute();
-
-        return $this->getFormattedEntities($cartDotrineCol);
-    }
-
-    /**
-     *
-     * @param int $id
-     * @return array | null
-     */
-    public function findOneById($id)
-    {
-        $query = [
-            'criteria' => [
-                'id' => [
-                    'value' => $id,
-                    'type'  => 'equal',
-                ],
-            ]
-        ];
-        $dotrineRec = $this->buildQuery($query)
-            ->fetchOne();
-
-        if (false === $dotrineRec) {
-            return new ArrayObject;
-        }
-
-        return $this->getFormattedEntity($dotrineRec);
-    }
-
     /**
      * @param array $entity
      * @param Doctrine_Record $record
@@ -153,16 +114,6 @@ class ApiCartsService extends ApiEntityService
         $entity['currencyCode'] = $currency['iso'];
 
         return $entity;
-    }
-
-    /**
-     *
-     * @param int $cart_id
-     * @return boolean
-     */
-    public function deleteCart($cart_id)
-    {
-        return false;
     }
 
    /**
@@ -215,11 +166,16 @@ class ApiCartsService extends ApiEntityService
     public function buildInitialQuery()
     {
         $token = $this->oauth->getToken();
-        return Doctrine_Query::create()
-            ->from('Transaction root')
+        return parent::buildInitialQuery()
             ->leftJoin('root.Professional Professional')
             ->leftJoin('root.OsToken token')
             ->andWhere('token.token = ?', $token->token);
         
     }
+
+    public function getBaseEntityName() 
+    {
+        return 'Transaction';
+    }
+
 }

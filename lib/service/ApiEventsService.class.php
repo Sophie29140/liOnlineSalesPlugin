@@ -16,14 +16,14 @@ class ApiEventsService extends ApiEntityService {
     protected $translationService;
     protected $oauth;
     protected static $FIELD_MAPPING = [
-        'id' => ['type' => 'single', 'value' => 'id'],
-        'metaEvent' => ['type' => 'sub-record', 'value' => null],
-        'metaEvent.id' => ['type' => 'single', 'value' => 'MetaEvent.id'],
-        'metaEvent.translations' => ['type' => 'collection', 'value' => 'MetaEvent.Translation'],
-        'category' => ['type' => 'single', 'value' => 'EventCategory.name'],
-        'translations' => ['type' => 'collection', 'value' => 'Translation'],
-        'imageURL' => ['type' => null, 'value' => null],
-        'manifestations' => ['type' => 'value', 'value' => []],
+        'id' => ['type' => 'single', 'value' => 'id', 'updatable' => false],
+        'metaEvent' => ['type' => 'sub-record', 'value' => null, 'updatable' => false],
+        'metaEvent.id' => ['type' => 'single', 'value' => 'MetaEvent.id', 'updatable' => true],
+        'metaEvent.translations' => ['type' => 'collection', 'value' => 'MetaEvent.Translation', 'updatable' => false],
+        'category' => ['type' => 'single', 'value' => 'EventCategory.name', 'updatable' => false],
+        'translations' => ['type' => 'collection', 'value' => 'Translation', 'updatable' => false],
+        'imageURL' => ['type' => null, 'value' => null, 'updatable' => false],
+        'manifestations' => ['type' => 'value', 'value' => [], 'updatable' => false],
     ];
 
     /**
@@ -31,45 +31,10 @@ class ApiEventsService extends ApiEntityService {
      */
     protected $manifestationsService;
 
-    /**
-     * 
-     * @return array
-     */
-    public function findAll(array $query) {
-        $q = $this->buildQuery($query);
-        $events = $q->execute();
-
-        return $this->getFormattedEntities($events);
-    }
-
-    /**
-     *
-     * @param int $event_id
-     * @return array | null
-     */
-    public function findOneById($event_id) {
-        $eventDotrineRec = $this->buildQuery([
-                    'criteria' => [
-                        'id' => [
-                            'value' => $event_id,
-                            'type' => 'equal',
-                        ],
-                    ]
-                ])
-                ->fetchOne();
-
-        if (false === $eventDotrineRec) {
-            return new ArrayObject;
-        }
-
-        return $this->getFormattedEntity($eventDotrineRec);
-    }
-
     public function buildInitialQuery() {
-        return Doctrine::getTable('Event')->createQuery('root')
-                        ->leftJoin('root.Manifestations Manifestations')
+        return parent::buildInitialQuery()
+            ->leftJoin('root.Manifestations Manifestations')
         ;
- 
     }
 
     protected function postFormatEntity(array $entity, Doctrine_Record $record) {
@@ -120,58 +85,9 @@ class ApiEventsService extends ApiEntityService {
     public function getOAuthService() {
         return $this->oauth;
     }
-    /**
-     *
-     * @param int $eventId
-     * @param array $data
-     * @return boolean
-     */
-    public function updateEvent($eventId, $data)
+
+    public function getBaseEntityName() 
     {
-        // Check existence and access
-        if (!( $event = Doctrine::getTable('Event')->find($eventId) )) {
-            return false;
-        }
-
-        // Validate data
-        if (!is_array($data)) {
-            return false;
-        }
-        
-        $accessor = new liApiPropertyAccessor;
-        $accessor->toRecord($data, $event, static::$FIELD_MAPPING);
-        $event->save();
-
-        return true;
-    }
-    public function deleteEvent($eventId)
-    {
-        // Check existence and access
-        if (!( $event = Doctrine::getTable('Event')->find($eventId) )) {
-            return false;
-        }
-   
-        return $event->delete();
-   
-   
-    }
-    public function createEvent($eventId, $data)
-    {
-        // Check existence and access
-        // if exist create not possible
-        if (( $event = Doctrine::getTable('Event')->find($eventId) )) {
-            return false;
-        }
-
-        // Validate data
-        if (!is_array($data)) {
-            return false;
-        }
-        
-        $accessor = new liApiPropertyAccessor;
-        $accessor->toRecord($data, $event, static::$FIELD_MAPPING);
-        $event->save();
-
-        return true;
+        return 'Event';
     }
 }

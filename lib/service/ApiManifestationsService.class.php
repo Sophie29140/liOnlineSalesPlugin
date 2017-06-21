@@ -19,77 +19,38 @@ class ApiManifestationsService extends ApiEntityService
     protected $oauth;
 
     protected static $FIELD_MAPPING = [
-        'id'                => ['type' => 'single', 'value' => 'id'],
-        'startsAt'          => ['type' => 'single', 'value' => 'happens_at'],
-        'endsAt'            => ['type' => 'single', 'value' => 'ends_at'],
-        'event.id'              => ['type' => 'single', 'value' => 'Event.id'],
+        'id'                => ['type' => 'single', 'value' => 'id', 'updatable' => false],
+        'startsAt'          => ['type' => 'single', 'value' => 'happens_at', 'updatable' => true],
+        'endsAt'            => ['type' => 'single', 'value' => 'ends_at', 'updatable' => true],
+        'event_id'              => ['type' => 'single', 'value' => 'event_id', 'updatable' => true],
         //'event.metaEvent'       => ['type' => 'sub-record', 'value' => null],
-        'event.metaEvent.id'    => ['type' => 'single', 'value' => 'Event.MetaEvent.id'],
-        'event.metaEvent.translations' => ['type' => 'collection', 'value' => 'Event.MetaEvent.Translation'],
-        'event.category'        => ['type' => 'single', 'value' => 'Event.EventCategory.name'],
-        'event.translations'    => ['type' => 'collection', 'value' => 'Event.Translation'],
-        'event.imageId'         => ['type' => 'single', 'value' => 'Event.picture_id'],
-        'event.imageURL'        => ['type' => null, 'value' => null],
+        'event.metaEvent.id'    => ['type' => 'single', 'value' => 'Event.MetaEvent.id', 'updatable' => false],
+        'event.metaEvent.translations' => ['type' => 'collection', 'value' => 'Event.MetaEvent.Translation', 'updatable' => false],
+        'event.category'        => ['type' => 'single', 'value' => 'Event.EventCategory.name', 'updatable' => false],
+        'event.translations'    => ['type' => 'collection', 'value' => 'Event.Translation', 'updatable' => false],
+        'event.imageId'         => ['type' => 'single', 'value' => 'Event.picture_id', 'updatable' => false],
+        'event.imageURL'        => ['type' => null, 'value' => null, 'updatable' => false],
         //'location'          => ['type' => null, 'value' => null],
-        'location.id'       => ['type' => 'single', 'value' => 'Location.id'],
-        'location.name'     => ['type' => 'single', 'value' => 'Location.name'],
-        'location.address'  => ['type' => 'single', 'value' => 'Location.address'],
-        'location.zip'      => ['type' => 'single', 'value' => 'Location.postalcode'],
-        'location.city'     => ['type' => 'single', 'value' => 'Location.city'],
-        'location.country'  => ['type' => 'single', 'value' => 'Location.country'],
+        'location_id'       => ['type' => 'single', 'value' => 'location_id', 'updatable' => true],
+        'location.name'     => ['type' => 'single', 'value' => 'Location.name', 'updatable' => false],
+        'location.address'  => ['type' => 'single', 'value' => 'Location.address', 'updatable' => false],
+        'location.zip'      => ['type' => 'single', 'value' => 'Location.postalcode', 'updatable' => false],
+        'location.city'     => ['type' => 'single', 'value' => 'Location.city', 'updatable' => false],
+        'location.country'  => ['type' => 'single', 'value' => 'Location.country', 'updatable' => false],
         //'gauges'            => ['type' => 'collection', 'value' => null],
-        'gauges.id'         => ['type' => 'collection.single', 'value' => 'Gauges.id'],
-        'gauges.name'       => ['type' => 'collection.single', 'value' => 'Gauges.Workspace.name'],
-        'gauges.availableUnits' => ['type' => 'collection.single', 'value' => 'Gauges.free'],
+        'gauges.id'         => ['type' => 'collection.single', 'value' => 'Gauges.id', 'updatable' => false],
+        'gauges.name'       => ['type' => 'collection.single', 'value' => 'Gauges.Workspace.name', 'updatable' => false],
+        'gauges.availableUnits' => ['type' => 'collection.single', 'value' => 'Gauges.free', 'updatable' => false],
         //'gauges.prices.id' => ['type' => 'single', 'value' => 'Gauges.Prices.id'],
         //'gauges.prices.translations' => ['type' => 'single', 'value' => 'Gauges.Prices.Translation'],
         //'gauges.prices.value' => ['type' => 'single', 'value' => 'Gauges.Prices.value'],
         //'gauges.prices.currencyCode' => null,
     ];
 
-//    /**
-//     *
-//     * @return array
-//     */
-//    public function findAll(array $query)
-//    {
-//        $q = $this->buildQuery($query);
-//        $manifestations = $q->execute();
-//        return $this->getFormattedEntities($manifestations);
-//    }
-//
-//    /**
-//     *
-//     * @param int $manif_id
-//     * @return array | null
-//     */
-//    public function findOneById($manif_id)
-//    {
-//        $manifDotrineRec = $this->buildQuery([
-//            'criteria' => [
-//                'id' => [
-//                    'value' => $manif_id,
-//                    'type'  => 'equal',
-//                ],
-//            ]
-//        ])
-//        ->fetchOne();
-//        if (false === $manifDotrineRec)
-//        {
-//            return null;
-//        }
-//        return $this->getFormattedEntity($manifDotrineRec);
-//    }
 
     public function buildInitialQuery()
-   {
-          $q = $this->manifestationsService->buildQuery($this->oauth->getToken()->OsApplication->User, NULL, 'root');
-                // TODO: use the customer API service when it will be validated
-//        $q = $this->manifestationsService->completeQueryWithContact($q, $this->oauth->getToken()->OcTransaction[0]->oc_professional_id
-//            ? $this->oauth->getToken()->OcTransaction[0]->OcProfessional->Professional->contact_id
-//            : NULL
-//        );
-      return $q;
+    {
+        return parent::buildInitialQuery();
     }
 
     public function getMaxShownAvailableUnits()
@@ -165,62 +126,11 @@ class ApiManifestationsService extends ApiEntityService
     {
         return $this->oauth;
     }
-    
-    /**
-     *
-     * @param int $manifId
-     * @param array $data
-     * @return boolean
-     */
-    public function updateManif($manifId, $data)
+  
+    public function getBaseEntityName() 
     {
-        // Check existence and access
-        if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
-            return false;
-        }
-
-        // Validate data
-        if (!is_array($data)) {
-            return false;
-        }
-        
-        $accessor = new liApiPropertyAccessor;
-        $accessor->toRecord($data, $manif, static::$FIELD_MAPPING);
-        $manif->save();
-
-        return true;
+        return 'Manifestation';
     }
-    public function deleteManif($manifId)
-    {
-        // Check existence and access
-        if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
-            return false;
-        }
-        // Check link existence with GAUGES
-        if (( $gauge = Doctrine::getTable('Gauge')->findOneByManifestation_id($manifId) )){
-            return false;
-        }
-        return $manif->delete();
-   
-   
-    }
-    public function createManif($manifId, $data)
-    {
-        // Check existence and access
-        if (!( $manif = Doctrine::getTable('Manifestation')->find($manifId) )) {
-            return false;
-        }
 
-        // Validate data
-        if (!is_array($data)) {
-            return false;
-        }
-        
-        $accessor = new liApiPropertyAccessor;
-        $accessor->toRecord($data, $manif, static::$FIELD_MAPPING);
-        $manif->save();
-
-        return true;
-    }
 }
 

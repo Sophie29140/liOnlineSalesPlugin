@@ -12,10 +12,12 @@ return [
     'osApiCarts',
     'osApiCartItems',
     'osApiEvents',
+    'osApiEventCategories',
     'osApiManifestations',
     'osApiProducts',
     'osApiProductCategories',
     'osApiPromotions',
+    'osApiCustomers',  
   ],
   'filters' => [
     'exceptionCatcherFilter' => 'on',

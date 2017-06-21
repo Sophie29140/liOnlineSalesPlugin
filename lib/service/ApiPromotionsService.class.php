@@ -17,26 +17,24 @@ class ApiPromotionsService  extends ApiEntityService {
     protected $oauth;
     protected static $FIELD_MAPPING = [
         'id'                    => ['type' => 'single', 'value' => 'id', 'updatable' => false],
-        'type'                  => ['type' => 'single', 'value' => 'Type.name', 'updatable' => false],
-        'translations'          => ['type' => 'collection', 'value' => 'Translation', 'updatable' => false],
+        'type_id'               => ['type' => 'single', 'value' => 'member_card_type_id', 'updatable' => true],
+        'type_name'             => ['type' => 'single', 'value' => 'MemberCardType.name', 'updatable' => false],
+        'translations'          => ['type' => 'collection', 'value' => 'MemberCardType.Translation', 'updatable' => false],
         'createdAt'             => ['type' => 'single', 'value' => 'created_at', 'updatable' => false],
         'expiresAt'             => ['type' => 'single', 'value' => 'expire_at', 'updatable' => false],
         'state'                 => ['type' => 'single', 'value' => 'active', 'updatable' => false],
-        'value'                 => ['type' => 'single', 'value' => 'type.value', 'updatable' => false],
-        'prices.id'             => ['type' => 'collection.single', 'value' => 'Prices.id', 'updatable' => false],        
+        'value'                 => ['type' => 'single', 'value' => 'value', 'updatable' => false],
+        'prices.id'             => ['type' => 'collection', 'value' => 'MemberCardType.Prices.id', 'updatable' => false],        
         'prices.translations'   => ['type' => 'collection.single', 'value' => 'Prices.Translation', 'updatable' => false],        
         'prices.value'          => ['type' => 'collection.single', 'value' => 'Prices.value', 'updatable' => false], 
-                
-                
+       
     ];
       
     
-    public function buildInitialQuery() {
-        
-         $q = Doctrine_Query::create()
-            ->from('Product p')
-        ;
-        return $q;
+    public function buildInitialQuery() 
+    {        
+        return parent::buildInitialQuery()
+         ;  
     }
 
     public function setTranslationService(ApiTranslationService $i18n) {
@@ -60,12 +58,10 @@ class ApiPromotionsService  extends ApiEntityService {
     {
         return 10;
     }
-    protected function postFormatEntity(array $entity, Doctrine_Record $product) {
+    protected function postFormatEntity(array $entity, Doctrine_Record $promotion) {
         // translations
         $this->translationService
                 ->reformat($entity['translations'])
-                //->reformat($entity['product_declination']['translations'])
-                //->reformat($entity['product_category']['translations'])
         ;
 
         // imageURL
@@ -75,9 +71,14 @@ class ApiPromotionsService  extends ApiEntityService {
         // currency
         $currency = sfConfig::get('project_internals_currency', ['iso' => 978, 'symbol' => '€']);
         $entity['currencyCode'] = $currency['iso'];
-
         
+                
         return $entity;
      }
+
+    public function getBaseEntityName() 
+    {
+        return 'MemberCard';
+    }
 
 }

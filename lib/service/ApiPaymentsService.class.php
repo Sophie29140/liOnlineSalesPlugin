@@ -13,13 +13,13 @@
 class ApiPaymentsService extends ApiEntityService
 {
     protected static $FIELD_MAPPING = [
-        'id'             => ['type' => 'single', 'value' => 'id'],
-        'payment_method' => ['type' => 'single', 'value' => 'Method.name'],
-        'amount'         => ['type' => 'single', 'value' => 'value'],
-        'orderId'        => ['type' => 'single', 'value' => 'transaction_id'],
-        'state'          => ['type' => null,     'value' => null],
-        'createAt'       => ['type' => 'single', 'value' => 'created_at'],
-        '_link.order'    => ['type' => null,     'value' => null],
+        'id'             => ['type' => 'single', 'value' => 'id', 'updatable' => false],
+        'payment_method' => ['type' => 'single', 'value' => 'Method.name', 'updatable' => false],
+        'amount'         => ['type' => 'single', 'value' => 'value', 'updatable' => false],
+        'orderId'        => ['type' => 'single', 'value' => 'transaction_id', 'updatable' => false],
+        'state'          => ['type' => null,     'value' => null, 'updatable' => false],
+        'createAt'       => ['type' => 'single', 'value' => 'created_at', 'updatable' => false],
+        '_link.order'    => ['type' => null,     'value' => null, 'updatable' => false],
     ];
 
     /**
@@ -48,45 +48,7 @@ class ApiPaymentsService extends ApiEntityService
         $this->translationService = $service;
     }
 
-    /**
-     *
-     * @param array $query
-     * @return array
-     */
-    public function findAll($query)
-    {
-        $q = $this->buildQuery($query);
-        $cartDotrineCol = $q->execute();
-
-        return $this->getFormattedEntities($cartDotrineCol);
-    }
-
-    /**
-     *
-     * @param int $id
-     * @return array | null
-     */
-    public function findOneById($id)
-    {
-        $token = $this->oauth->getToken();
-        $query = [
-            'criteria' => [
-                'id' => [
-                    'value' => $id,
-                    'type'  => 'equal',
-                ],
-            ]
-        ];
-        $dotrineRec = $this->buildQuery($query)
-            ->fetchOne();
-
-        if (false === $dotrineRec) {
-            return new ArrayObject;
-        }
-
-        return $this->getFormattedEntity($dotrineRec);
-    }
-
+    
     /**
      * @param array $entity
      * @param Doctrine_Record $record
@@ -106,11 +68,16 @@ class ApiPaymentsService extends ApiEntityService
     public function buildInitialQuery()
     {
         $token = $this->oauth->getToken();
-        return Doctrine_Query::create()
-            ->from('Payment root')
+        return parent::buildInitialQuery()
             ->leftJoin('root.Transaction Transaction')
             ->leftJoin('Transaction.OsToken token')
             ->andWhere('token.id = ?', $token->id)
         ;
     }
+
+    public function getBaseEntityName() 
+    {
+        return 'Payment';
+    }
+
 }

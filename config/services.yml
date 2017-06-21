@@ -13,6 +13,10 @@ all:
             calls:
                 - ['setOAuthService', ['@api_oauth_service']]
                 - ['setTranslationService', ['@api_translation_service']]
+        api_customers_service:
+            class: ApiCustomersService
+            calls:
+#                - ['setOAuthService', ['@api_oauth_service']]
         api_carts_service:
             class: ApiCartsService
             calls:
@@ -38,6 +42,9 @@ all:
                 - ['setApiManifestationsService', ['@api_manifestations_service']]
                 - ['setTranslationService', ['@api_translation_service']]
                 - ['setOAuthService', ['@api_oauth_service']]
+        api_eventcategories_service:
+            class: ApiEventCategoriesService
+            calls:
         api_manifestations_service:
             class: ApiManifestationsService
             calls:
@@ -56,6 +63,7 @@ all:
         api_promotions_service:
             class: ApiPromotionsService
             calls:
+                - ['setTranslationService', ['@api_translation_service']]
                 - ['setOAuthService', ['@api_oauth_service']]
-               
+        
 

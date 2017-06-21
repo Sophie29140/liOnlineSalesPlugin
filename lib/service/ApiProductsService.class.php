@@ -31,12 +31,9 @@ class ApiProductsService  extends ApiEntityService {
     ];
       
     
-    public function buildInitialQuery() {
-        
-         $q = Doctrine_Query::create()
-            ->from('Product p')
-        ;
-        return $q;
+    public function buildInitialQuery()
+    {
+           return parent::buildInitialQuery();
     }
 
     public function setTranslationService(ApiTranslationService $i18n) {
@@ -64,8 +61,6 @@ class ApiProductsService  extends ApiEntityService {
         // translations
         $this->translationService
                 ->reformat($entity['translations'])
-                //->reformat($entity['product_declination']['translations'])
-                //->reformat($entity['product_category']['translations'])
         ;
 
         // imageURL
@@ -79,5 +74,10 @@ class ApiProductsService  extends ApiEntityService {
         
         return $entity;
      }
+
+    public function getBaseEntityName() 
+    {
+        return 'Product';
+    }
 
 }
