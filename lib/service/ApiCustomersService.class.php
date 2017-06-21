@@ -99,7 +99,7 @@ class ApiCustomersService extends ApiEntityService
         }
         unset($data['id'], $data['email']);
         
-        return parent::update($data);
+        return parent::update($id, $data);
     }
 
     /**

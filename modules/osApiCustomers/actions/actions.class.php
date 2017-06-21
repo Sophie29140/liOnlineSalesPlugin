@@ -118,7 +118,7 @@ class osApiCustomersActions extends apiActions
         $customers = $this->getService('api_customers_service');
         
         $contact = $customers->getIdentifiedContact();
-        if ( $contact->id != $data['id'] ) {
+        if (!( $contact instanceof Contact && $contact->id == $data['id'] )) {
             return $this->createJsonResponse([
                 'code' => ApiHttpStatus::UNAUTHORIZED,
                 'message' => 'You can only modify your own data',
@@ -144,7 +144,7 @@ class osApiCustomersActions extends apiActions
         $customers = $this->getService('api_customers_service');
 
         $contact = $customers->getIdentifiedContact();
-        $result = !$pro instanceof Contact ? new ArrayObject : $customers->getFormattedEntity($contact);
+        $result = !$contact instanceof Contact ? new ArrayObject : $customers->getFormattedEntity($contact);
         return $this->createJsonResponse($result);
     }
 
