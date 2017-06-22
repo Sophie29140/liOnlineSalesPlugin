@@ -7,55 +7,31 @@
  */
 
 /**
- * Description of ApiProductsService
+
+ * Description of ApiCustomersService
  *
- * @author Sophie MICHEL <sophie.michel@libre-informatique.fr>
+ * @author Baptiste SIMON <baptiste.simon@libre-informatique.fr>
  */
-class ApiEventCategoriesService  extends ApiEntityService {
-    
-    protected $translationService;
+class ApiEventCategoriesService extends ApiEntityService
+{
     protected $oauth;
     protected static $FIELD_MAPPING = [
-        'id'            => ['type' => 'single', 'value' => 'id', 'updatable' => false],
-        'name'          => ['type' => 'single', 'value' => 'name', 'updatable' => false],
-                
+        'id'                => ['type' => 'single', 'value' => 'id', 'updatable' => false],
+        'name'              => ['type' => 'single', 'value' => 'name'],
     ];
-      
-    
-    public function buildInitialQuery() {
-        
-       return parent::buildInitialQuery();
-    }
 
-    public function setTranslationService(ApiTranslationService $i18n) {
-        $this->translationService = $i18n;
-        return $this;
-    }
-
-    public function setOAuthService(ApiOAuthService $service) {
-        $this->oauth = $service;
-    }
-
-    public function getOAuthService() {
-        return $this->oauth;
-    }
-    
-    public function setEventCategoryService(EventCategoryService $service)
-    {
-        $this->eventsCategoryService = $service;
-    }
-    public function getMaxShownAvailableUnits()
-    {
-        return 10;
-    }
-    protected function postFormatEntity(array $entity, Doctrine_Record $product) {
-      
-       return $entity;
-     }
-
-    public function getBaseEntityName() 
+    public function getBaseEntityName()
     {
         return 'EventCategory';
     }
 
+    public function setOAuthService(ApiOAuthService $service)
+    {
+        $this->oauth = $service;
+    }
+
+    public function getOAuthService()
+    {
+        return $this->oauth;
+    }
 }

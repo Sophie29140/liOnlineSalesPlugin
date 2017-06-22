@@ -16,11 +16,11 @@ class ApiTranslationService
     {
         // dates in ISO format
         $done = false;
-        foreach ( $originals as $id => $original ) {
-            if ( !is_string($original) ) {
+        foreach ($originals as $id => $original) {
+            if (!is_string($original)) {
                 continue;
             }
-            if (!( preg_match('/\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d/', $original) == 1 && strtotime($original) !== false )) {
+            if (!(preg_match('/\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d/', $original) == 1 && strtotime($original) !== false)) {
                 continue;
             }
             
@@ -28,20 +28,20 @@ class ApiTranslationService
             $originals[$id] = str_replace('-', 'T', date('Ymd-HisP', $time));
             $done = true;
         }
-        if ( $done ) {
+        if ($done) {
             return $this;
         }
         
         // translations
         $done = false;
-        foreach ( $originals as $id => $original ) {
+        foreach ($originals as $id => $original) {
             unset(
                 $originals[$id]['id'],
                 $originals[$id]['lang']
             );
             $done = true;
         }
-        if ( $done ) {
+        if ($done) {
             return $this;
         }
         

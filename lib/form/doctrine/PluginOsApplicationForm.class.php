@@ -10,29 +10,30 @@
  */
 abstract class PluginOsApplicationForm extends BaseOsApplicationForm
 {
-  public function configure()
-  {
-    parent::configure();
+    public function configure()
+    {
+        parent::configure();
     
-    $this->widgetSchema->getFormFormatter()->setTranslationCatalogue('li_os');
+        $this->widgetSchema->getFormFormatter()->setTranslationCatalogue('li_os');
 
-    $this->widgetSchema['user_id']->setOption('add_empty', true);
+        $this->widgetSchema['user_id']->setOption('add_empty', true);
     
-    unset($this->widgetSchema['secret'], $this->validatorSchema['secret']);
-    $this->widgetSchema   ['secret_new'] = new sfWidgetFormInputText(['label' => 'Secret']);
-    $this->validatorSchema['secret_new'] = new sfValidatorString(['required' => false]);
+        unset($this->widgetSchema['secret'], $this->validatorSchema['secret']);
+        $this->widgetSchema   ['secret_new'] = new sfWidgetFormInputText(['label' => 'Secret']);
+        $this->validatorSchema['secret_new'] = new sfValidatorString(['required' => false]);
     
-    $this->validatorSchema['expires_at']->setOption('required' , false);
-  }
+        $this->validatorSchema['expires_at']->setOption('required', false);
+    }
   
-  public function doSave($con = null)
-  {
-    $oauth = sfContext::getInstance()->getContainer()->get('api_oauth_service');
+    public function doSave($con = null)
+    {
+        $oauth = sfContext::getInstance()->getContainer()->get('api_oauth_service');
     
-    if ( $this->values['secret_new'] || $this->object->isNew() )
-      $this->values['secret'] = $oauth->encryptSecret($this->values['secret_new']);
-    unset($this->values['secret_new']);
+        if ($this->values['secret_new'] || $this->object->isNew()) {
+            $this->values['secret'] = $oauth->encryptSecret($this->values['secret_new']);
+        }
+        unset($this->values['secret_new']);
     
-    parent::doSave($con);
-  }
+        parent::doSave($con);
+    }
 }

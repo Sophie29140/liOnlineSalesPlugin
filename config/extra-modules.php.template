@@ -1,6 +1,7 @@
 <?php
 // this template is useless until you want to enable extra-modules in this application
 // this usually goes into the settings.yml file, .settings > enabled_modules > []
+// adding a module in this deployed list requires a ./symfony cc
 
 return [
   'modules' => [
@@ -18,6 +19,8 @@ return [
     'osApiProductCategories',
     'osApiPromotions',
     'osApiCustomers',  
+    'osApiMetaEvents',
+    
   ],
   'filters' => [
     'exceptionCatcherFilter' => 'on',

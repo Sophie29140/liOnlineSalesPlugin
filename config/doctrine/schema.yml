@@ -26,6 +26,7 @@ OsToken:
       foreignType: one
       onDelete: CASCADE
       onUpdate: CASCADE
+      foreignAlias: OsToken
     OsApplication:
       onDelete: CASCADE
       onUpdate: CASCADE

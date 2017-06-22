@@ -11,19 +11,21 @@
  *
  * @author Baptiste SIMON <baptiste.simon@libre-informatique.fr>
  */
-class ApiEventsService extends ApiEntityService {
-
+class ApiEventsService extends ApiEntityService
+{
     protected $translationService;
     protected $oauth;
     protected static $FIELD_MAPPING = [
-        'id' => ['type' => 'single', 'value' => 'id', 'updatable' => false],
-        'metaEvent' => ['type' => 'sub-record', 'value' => null, 'updatable' => false],
-        'metaEvent.id' => ['type' => 'single', 'value' => 'MetaEvent.id', 'updatable' => true],
+        'id'            => ['type' => 'single', 'value' => 'id', 'updatable' => false],
+        //'metaEvent'     => ['type' => 'sub-record', 'value' => null],
+        'metaEvent.id'  => ['type' => 'single', 'value' => 'MetaEvent.id', 'for-update' => 'meta_event_id'],
         'metaEvent.translations' => ['type' => 'collection', 'value' => 'MetaEvent.Translation', 'updatable' => false],
-        'category' => ['type' => 'single', 'value' => 'EventCategory.name', 'updatable' => false],
-        'translations' => ['type' => 'collection', 'value' => 'Translation', 'updatable' => false],
-        'imageURL' => ['type' => null, 'value' => null, 'updatable' => false],
-        'manifestations' => ['type' => 'value', 'value' => [], 'updatable' => false],
+        'category'      => ['type' => 'single', 'value' => 'EventCategory.name', 'updatable' => false],
+        'translations'  => ['type' => 'collection', 'value' => 'Translation'],
+        'imageId'       => ['type' => 'single', 'value' => 'picture_id'],
+        'imageURL'      => ['type' => null, 'value' => null, 'updatable' => false],
+        'manifestations'=> ['type' => 'value', 'value' => [], 'updatable' => false],
+
     ];
 
     /**
@@ -31,13 +33,16 @@ class ApiEventsService extends ApiEntityService {
      */
     protected $manifestationsService;
 
-    public function buildInitialQuery() {
+
+    public function buildInitialQuery()
+    {
         return parent::buildInitialQuery()
             ->leftJoin('root.Manifestations Manifestations')
         ;
     }
 
-    protected function postFormatEntity(array $entity, Doctrine_Record $record) {
+    protected function postFormatEntity(array $entity, Doctrine_Record $record)
+    {
         // translations
         $this->translationService
                 ->reformat($entity['translations'])
@@ -45,7 +50,7 @@ class ApiEventsService extends ApiEntityService {
 
         // imageURL
         sfContext::getInstance()->getConfiguration()->loadHelpers(array('Url'));
-        $entity['imageURL'] = url_for('@os_api_picture?id=' . $entity['id']);
+        $entity['imageURL'] = url_for('@os_api_pictures_resource?id=' . $entity['id']);
 
         // manifestations
         $query = [
@@ -69,24 +74,28 @@ class ApiEventsService extends ApiEntityService {
         return $entity;
     }
 
-    public function setApiManifestationsService(ApiManifestationsService $manifestations) {
+    public function setApiManifestationsService(ApiManifestationsService $manifestations)
+    {
         $this->manifestationsService = $manifestations;
     }
 
-    public function setTranslationService(ApiTranslationService $i18n) {
+    public function setTranslationService(ApiTranslationService $i18n)
+    {
         $this->translationService = $i18n;
         return $this;
     }
 
-    public function setOAuthService(ApiOAuthService $service) {
+    public function setOAuthService(ApiOAuthService $service)
+    {
         $this->oauth = $service;
     }
 
-    public function getOAuthService() {
+    public function getOAuthService()
+    {
         return $this->oauth;
     }
-
-    public function getBaseEntityName() 
+    
+    public function getBaseEntityName()
     {
         return 'Event';
     }

@@ -9,6 +9,7 @@
  * Description of actions
  *
  * @author Glenn Cavarlé <glenn.cavarle@libre-informatique.fr>
+ * @author Baptiste SIMON <baptiste.simon@libre-informatique.fr>
  */
 class osApiCartItemsActions extends apiActions
 {
@@ -67,18 +68,18 @@ class osApiCartItemsActions extends apiActions
         /* @var $cartsService ApiCartsService */
         $cartsService = $this->getService('api_carts_service');
         if (!$cartsService->isCartEditable($cart_id)) {
-            return $this->createBadRequestResponse(['error' => "Cart not found or not editable (id=$cart_id)"]);
+            throw new liApiException("Cart not found or not editable (id=$cart_id)");
         }
 
         /* @var $cartItemsService ApiCartItemsService */
         $cartItemsService = $this->getService('api_cartitems_service');
         if (!$cartItemsService->isCartItemCreatable($cart_id, $declination_id)) {
-            return $this->createBadRequestResponse(['error' => "Time slot frozen"]);
+            throw new liApiException('Cart item unavailable.');
         }
         try {
             $cartItem = $cartItemsService->create($cart_id, $request->getParameter('application/json'));
-        } catch (liOnlineSaleException $exc) {
-            return $this->createBadRequestResponse(['error' => $exc->getMessage()]);
+        } catch (liOnlineSaleException $e) {
+            throw new liApiException($e->getMessage());
         }
 
         return $this->createJsonResponse($cartItem);
@@ -96,17 +97,19 @@ class osApiCartItemsActions extends apiActions
 
         $cart_id = $request->getParameter('id', 0);
         $item_id = $request->getParameter('item_id', 0);
+        $type    = $request->getParameter('type', 'ticket');
 
         /* @var $cartsService ApiCartsService */
         $cartsService = $this->getService('api_carts_service');
         if (!$cartsService->isCartEditable($cart_id)) {
-            return $this->createBadRequestResponse(['error' => "Cart not found or not editable (id=$cart_id)"]);
+            throw new liApiException("Cart not found or not editable (id=$cart_id)");
         }
 
         /* @var $cartItemsService ApiCartItemsService */
         $cartItemsService = $this->getService('api_cartitems_service');
+        $cartItemsService->setType(isset($request->getParameter('application/json')['type']) ? $request->getParameter('application/json')['type'] : 'ticket');
         if (!$cartItemsService->isCartItemEditable($cart_id, $item_id)) {
-            return $this->createBadRequestResponse(['error' => "Cart item not found or not editable (id=$item_id)"]);
+            throw new liApiException("Cart item not found or not editable (id=$item_id)");
         }
         $isSuccess = $cartItemsService->updateCartItem($cart_id, $item_id, $request->getParameter('application/json'));
 
@@ -128,25 +131,25 @@ class osApiCartItemsActions extends apiActions
      */
     public function delete(sfWebRequest $request)
     {
-
         $status = ApiHttpStatus::SUCCESS;
         $message = ApiHttpMessage::DELETE_SUCCESSFUL;
 
         $cart_id = $request->getParameter('id', 0);
         $item_id = $request->getParameter('item_id', 0);
+        $type    = $request->getParameter('type', 'ticket');
 
         /* @var $cartsService ApiCartsService */
         $cartsService = $this->getService('api_carts_service');
         if (!$cartsService->isCartEditable($cart_id)) {
-            return $this->createBadRequestResponse(['error' => "Cart not found or not editable (id=$cart_id)"]);
+            throw new liApiException("Cart not found or not editable (id=$cart_id)");
         }
 
         /* @var $cartItemsService ApiCartItemsService */
         $cartItemsService = $this->getService('api_cartitems_service');
         if (!$cartItemsService->isCartItemEditable($cart_id, $item_id)) {
-            return $this->createBadRequestResponse(['error' => "Cart item not found or not editable (id=$item_id)"]);
+            throw new liApiException("Cart item not found or not editable (id=$item_id)");
         }
-        $isSuccess = $cartItemsService->deleteCartItem($cart_id, $item_id);
+        $isSuccess = $cartItemsService->deleteCartItem($cart_id, $item_id, $type);
         if (!$isSuccess) {
             $status = ApiHttpStatus::BAD_REQUEST;
             $message = ApiHttpMessage::DELETE_FAILED;
@@ -155,42 +158,11 @@ class osApiCartItemsActions extends apiActions
         return $this->createJsonResponse([
                 "code" => $status,
                 'message' => $message
-                ], $status);
+            ], $status);
     }
-
-
-    /**
-     * Action for reordering cart items
-     * @param sfWebRequest $request
-     * @return string (sfView::NONE)
-     */
+    
     public function executeReorder(sfWebRequest $request)
     {
-        $status = ApiHttpStatus::SUCCESS;
-        $message = ApiHttpMessage::UPDATE_SUCCESSFUL;
-
-        $cart_id = $request->getParameter('id', 0);
-
-        /* @var $cartsService ApiCartsService */
-        $cartsService = $this->getService('api_carts_service');
-        if (!$cartsService->isCartEditable($cart_id)) {
-            return $this->createBadRequestResponse(['error' => "Cart not found or not editable (id=$cart_id)"]);
-        }
-
-        /* @var $cartItemsService ApiCartItemsService */
-        $cartItemsService = $this->getService('api_cartitems_service');
-        $isSuccess = $cartItemsService->reorderItems($cart_id, $request->getParameter('application/json'));
-
-        if (!$isSuccess) {
-            $status = ApiHttpStatus::BAD_REQUEST;
-            $message = ApiHttpMessage::UPDATE_FAILED;
-        }
-
-        return $this->createJsonResponse([
-                "code" => $status,
-                'message' => $message
-                ], $status);
+        throw new liApiNotImplementedException;
     }
-
-
 }

@@ -9,14 +9,12 @@
 /**
  * Description of actions
  *
- * @author Sophie MICHEL <sophie.michel@libre-informatique.fr>
  * @author Baptiste SIMON <baptiste.simon@libre-informatique.fr>
  */
-
-class osApiEventsActions extends apiActions
+class osApiMetaEventsActions extends apiActions
 {
     public function getMyService()
     {
-        return $this->getService('api_events_service');
+        return $this->getService('api_meta_events_service');
     }
 }
