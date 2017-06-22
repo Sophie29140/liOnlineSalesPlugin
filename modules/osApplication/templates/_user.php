@@ -2,4 +2,4 @@
   $os_application->User,
   'default',
   'sfGuardUser/edit?id='.$os_application->user_id
-) ?>
+);

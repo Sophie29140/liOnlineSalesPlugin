@@ -13,7 +13,6 @@
  */
 class ApiManifestationsService extends ApiEntityService
 {
-
     protected $translationService;
     protected $manifestationsService;
     protected $oauth;
@@ -50,7 +49,7 @@ class ApiManifestationsService extends ApiEntityService
 
     public function buildInitialQuery()
     {
-      $q = $this->manifestationsService->buildQuery($this->oauth->getToken()->OsApplication->User, NULL, 'root');
+        $q = $this->manifestationsService->buildQuery($this->oauth->getToken()->OsApplication->User, null, 'root');
       // TODO: use the customer API service when it will be validated
 //        $q = $this->manifestationsService->completeQueryWithContact($q, $this->oauth->getToken()->OcTransaction[0]->oc_professional_id
 //            ? $this->oauth->getToken()->OcTransaction[0]->OcProfessional->Professional->contact_id
@@ -74,9 +73,9 @@ class ApiManifestationsService extends ApiEntityService
 
         // gauges
         $currency = sfConfig::get('project_internals_currency', ['iso' => 978, 'symbol' => '€']);
-        foreach ( $entity['gauges'] as $id => $gauge ) {
+        foreach ($entity['gauges'] as $id => $gauge) {
             // availableUnits
-            if ( isset($gauge['availableUnits']) ) {
+            if (isset($gauge['availableUnits'])) {
                 $free = $gauge['availableUnits'];
                 $entity['gauges'][$id]['availableUnits'] = $free > $this->getMaxShownAvailableUnits()
                     ? $this->getMaxShownAvailableUnits()
@@ -85,27 +84,28 @@ class ApiManifestationsService extends ApiEntityService
 
             // gauges.prices
             $entity['gauges'][$id]['prices'] = [];
-            foreach ( ['PriceManifestations' => $manif, 'PriceGauges' => $manif->Gauges[$id]] as $collection => $object )
-            foreach ( $object->$collection as $pm ) { // prices from manifestation
+            foreach (['PriceManifestations' => $manif, 'PriceGauges' => $manif->Gauges[$id]] as $collection => $object) {
+                foreach ($object->$collection as $pm) { // prices from manifestation
                 $price = [
                     'id' => $pm->price_id,
                     'value' => $pm->value,
                     'currencyCode' => $currency['iso'],
                 ];
-                $price['translations'] = [];
-                if ( $pm->price_id ) {
-                    foreach ( $pm->Price->Translation as $i11n ) {
-                        $price['translations'][$i11n->lang] = [];
-                        $price['translations'][$i11n->lang]['name'] = $i11n->name;
-                        $price['translations'][$i11n->lang]['description'] = $i11n->description;
+                    $price['translations'] = [];
+                    if ($pm->price_id) {
+                        foreach ($pm->Price->Translation as $i11n) {
+                            $price['translations'][$i11n->lang] = [];
+                            $price['translations'][$i11n->lang]['name'] = $i11n->name;
+                            $price['translations'][$i11n->lang]['description'] = $i11n->description;
+                        }
                     }
+                    $entity['gauges'][$id]['prices'][] = $price;
                 }
-                $entity['gauges'][$id]['prices'][] = $price;
             }
         }
 
         // imageURL
-        if ( $entity['event']['imageId'] ) {
+        if ($entity['event']['imageId']) {
             sfContext::getInstance()->getConfiguration()->loadHelpers(array('Url'));
             $entity['event']['imageURL'] = url_for('@os_api_pictures_resource?id='.$entity['event']['imageId']);
         }
@@ -138,4 +138,3 @@ class ApiManifestationsService extends ApiEntityService
         return 'Manifestation';
     }
 }
-

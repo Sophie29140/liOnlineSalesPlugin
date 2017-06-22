@@ -12,7 +12,6 @@
  */
 class ApiCartsService extends ApiEntityService
 {
-
     protected static $FIELD_MAPPING = [
         'id'            => ['type' => 'single', 'value' => 'id', 'updatable' => false],
         'items'         => ['type' => 'value', 'value' => [], 'updatable' => false],

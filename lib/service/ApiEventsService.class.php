@@ -11,8 +11,8 @@
  *
  * @author Baptiste SIMON <baptiste.simon@libre-informatique.fr>
  */
-class ApiEventsService extends ApiEntityService {
-
+class ApiEventsService extends ApiEntityService
+{
     protected $translationService;
     protected $oauth;
     protected static $FIELD_MAPPING = [
@@ -38,7 +38,6 @@ class ApiEventsService extends ApiEntityService {
         return parent::buildInitialQuery()
             ->leftJoin('root.Manifestations Manifestations')
         ;
- 
     }
 
     protected function postFormatEntity(array $entity, Doctrine_Record $record)

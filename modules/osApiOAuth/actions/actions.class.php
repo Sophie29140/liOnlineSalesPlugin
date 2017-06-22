@@ -13,7 +13,6 @@
  */
 class osApiOAuthActions extends jsonActions
 {
-
     public function preExecute()
     {
         $this->getService('api_actions_service')
@@ -49,16 +48,16 @@ class osApiOAuthActions extends jsonActions
         );
 
         //no application found -> return error response
-        if ( null === $app ) {
+        if (null === $app) {
             return $this->createJsonErrorResponse(
                     'application authentification failed', ApiHttpStatus::UNAUTHORIZED);
         }
 
         // deal with the token
-        if ( $refresh = $request->getParameter('refresh_token', false) ) {
+        if ($refresh = $request->getParameter('refresh_token', false)) {
             $newToken = $oauth->refreshToken($refresh, $app);
 
-            if ( null === $newToken ) {
+            if (null === $newToken) {
                 ApiLogger::log($e->getMessage(), $this);
                 return $this->createJsonErrorResponse('token cannot be refreshed', ApiHttpStatus::UNAUTHORIZED);
             }

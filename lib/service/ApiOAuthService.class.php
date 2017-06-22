@@ -17,24 +17,24 @@ class ApiOAuthService extends EvenementService
     /**
      * @var OsToken
      * */
-    protected $token = NULL;
+    protected $token = null;
 
     /**
-     * 
+     *
      * @param sfWebRequest $request
      * @return boolean
      */
     public function authenticate()
     {
         $headerValue = $this->getAuthorizationHeader();
-        if ( !$headerValue ) {
+        if (!$headerValue) {
             throw new liApiAuthException('API Key not provided');
         }
 
         $apiKey = preg_replace('/^Bearer\s+/', '', $headerValue);
         $this->token = $this->findRegisteredTokenByApiKey($apiKey);
 
-        if ( null === $this->token || !$this->token instanceof OsToken ) {
+        if (null === $this->token || !$this->token instanceof OsToken) {
             throw new liApiAuthException('Invalid API authentication');
         }
         return true;
@@ -44,8 +44,9 @@ class ApiOAuthService extends EvenementService
     protected function getAuthorizationHeader()
     {
         $headers = getallheaders();
-        if ( isset($headers['Authorization']) )
+        if (isset($headers['Authorization'])) {
             return $headers['Authorization'];
+        }
         return false;
     }
     /**
@@ -58,7 +59,7 @@ class ApiOAuthService extends EvenementService
     }
 
     /**
-     * 
+     *
      * @param string $key
      * @return OsToken | null
      */
@@ -71,7 +72,7 @@ class ApiOAuthService extends EvenementService
 
         $token = $q->fetchOne();
 
-        if ( !$token ) {
+        if (!$token) {
             return null;
         }
 
@@ -79,7 +80,7 @@ class ApiOAuthService extends EvenementService
     }
 
     /**
-     * 
+     *
      * @param string $client_id
      * @param string $client_secret
      * @return OsApplication | null
@@ -94,7 +95,7 @@ class ApiOAuthService extends EvenementService
         ;
 
         $app = $q->fetchOne();
-        if ( !$app ) {
+        if (!$app) {
             return null;
         }
 
@@ -124,7 +125,7 @@ class ApiOAuthService extends EvenementService
         ;
 
         $token = $q->fetchOne();
-        if ( !$token instanceof OsToken ) {
+        if (!$token instanceof OsToken) {
             throw new liApiAuthException('Refresh token not found.');
         }
         $token->token = $this->generateToken();

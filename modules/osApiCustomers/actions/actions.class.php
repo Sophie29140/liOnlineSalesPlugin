@@ -25,7 +25,7 @@ class osApiCustomersActions extends apiActions
     public function executeLogout(sfWebRequest $request)
     {
         $customers = $this->getService('api_customers_service');
-        if ( $customers->logout() ) {
+        if ($customers->logout()) {
             return $this->createJsonResponse([
                 'code' => ApiHttpStatus::SUCCESS,
                 'message' => 'Logout successful',
@@ -35,7 +35,6 @@ class osApiCustomersActions extends apiActions
             'code' => ApiHttpStatus::BAD_REQUEST,
             'message' => 'Logout failed',
         ]);
-
     }
 
     public function executeLogin(sfWebRequest $request)
@@ -43,7 +42,7 @@ class osApiCustomersActions extends apiActions
         $email = $request->getParameter('email');
         $password = $request->getParameter('password');
 
-        if ( !( $email && $password ) ) {
+        if (!($email && $password)) {
             return $this->createJsonResponse([
                     'code' => ApiHttpStatus::BAD_REQUEST,
                     'message' => 'Validation failed',
@@ -65,7 +64,7 @@ class osApiCustomersActions extends apiActions
 
         $customerService = $this->getService('api_customers_service');
 
-        if ( !$customerService->identify($query) ) {
+        if (!$customerService->identify($query)) {
             return $this->createJsonResponse([
                     'code' => ApiHttpStatus::UNAUTHORIZED,
                     'message' => 'Verification failed',
@@ -90,8 +89,8 @@ class osApiCustomersActions extends apiActions
     public function create(sfWebRequest $request)
     {
         $data = $request->getParameter('application/json');
-        foreach ( ['lastName', 'email', 'password'] as $field ) {
-            if ( !( isset($data[$field]) && $data[$field] ) ) {
+        foreach (['lastName', 'email', 'password'] as $field) {
+            if (!(isset($data[$field]) && $data[$field])) {
                 $data[$field] = ['errors' => 'Please enter your ' . $field];
                 return $this->createJsonResponse([
                     'code' => ApiHttpStatus::BAD_REQUEST,
@@ -118,7 +117,7 @@ class osApiCustomersActions extends apiActions
         $customers = $this->getService('api_customers_service');
         
         $contact = $customers->getIdentifiedContact();
-        if (!( $contact instanceof Contact && $contact->id == $data['id'] )) {
+        if (!($contact instanceof Contact && $contact->id == $data['id'])) {
             return $this->createJsonResponse([
                 'code' => ApiHttpStatus::UNAUTHORIZED,
                 'message' => 'You can only modify your own data',
@@ -158,7 +157,7 @@ class osApiCustomersActions extends apiActions
     {
         $customers = $this->getService('api_customers_service');
 
-        if ( $customers->isIdentificated() && !$query['criteria'] ) {
+        if ($customers->isIdentificated() && !$query['criteria']) {
             $customer = $customers->getIdentifiedCustomer();
             $query['criteria']['id']['value'] = $customer['id'];
             $query['criteria']['id']['type'] = 'equal';
@@ -166,10 +165,12 @@ class osApiCustomersActions extends apiActions
         }
 
         // restricts access to customers collection to requests filtering on password and email
-        if ( !$customers->isIdentificated() && !$query['criteria'] )
+        if (!$customers->isIdentificated() && !$query['criteria']) {
             return $this->createJsonResponse($this->getListWithDecorator([], $query));
-        if ( !( isset($query['criteria']['email']) && isset($query['criteria']['password']) && isset($query['criteria']['email']['value']) && isset($query['criteria']['password']['value']) ) )
+        }
+        if (!(isset($query['criteria']['email']) && isset($query['criteria']['password']) && isset($query['criteria']['email']['value']) && isset($query['criteria']['password']['value']))) {
             return $this->createJsonResponse($this->getListWithDecorator([], $query));
+        }
 
         $customer = $customers->identify($query);
 

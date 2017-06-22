@@ -13,8 +13,7 @@
 // TODO
 class ApiCartItemsService extends ApiEntityService
 {
-
-     protected static $FIELD_MAPPING = [
+    protected static $FIELD_MAPPING = [
         'id'               => ['type' => 'single', 'value' => 'id', 'updatable' => false],
         'type'             => ['type' => null, 'value' => null, 'updatable' => false],
         'quantity'         => ['type' => null, 'value' => null, 'updatable' => false],
@@ -89,22 +88,21 @@ class ApiCartItemsService extends ApiEntityService
         $entity['unitsTotal'] = 0;
         $entity['adjustmentsTotal'] = 0;
         $entity['quantity'] = 1;
-        $entity['unitPrice'] = round($entity['unitPrice']/(1+$record->vat),2);
+        $entity['unitPrice'] = round($entity['unitPrice']/(1+$record->vat), 2);
         
         $entity['adjustments'] = [];
         $entity['adjustmentsTotal'] = 0;
         $entity['units'] = [$entity['units']];
-        foreach ( $entity['units'] as $u => &$unit ) {
-            if ( $unit['adjustments']['amount'] == 0 ) {
+        foreach ($entity['units'] as $u => &$unit) {
+            if ($unit['adjustments']['amount'] == 0) {
                 $unit['adjustments'] = [];
-            }
-            else {
+            } else {
                 $entity['adjustments'][] = $unit['adjustments'];
                 $entity['adjustmentsTotal'] += $unit['adjustments']['amount'];
                 $unit['adjustments'] = [$unit['adjustments']];
             }
             
-            if ( $record->vat != 0 ) {
+            if ($record->vat != 0) {
                 $unit['adjustments'][] = $adj = [
                     'id' => null,
                     'type' => 'vat',
@@ -121,7 +119,7 @@ class ApiCartItemsService extends ApiEntityService
         $entity['total'] = $entity['unitsTotal'] + $entity['adjustmentsTotal'];
         
         sfContext::getInstance()->getConfiguration()->loadHelpers(['Url']);
-        switch ( $entity['type'] ) {
+        switch ($entity['type']) {
             case 'product':
             case 'pass':
                 // TODO
@@ -213,15 +211,15 @@ class ApiCartItemsService extends ApiEntityService
         }
         $declinationId = (int)$data['declinationId'];
 
-        if ( !$this->checkGaugeAndPriceAccess($declinationId, $priceId) ) {
+        if (!$this->checkGaugeAndPriceAccess($declinationId, $priceId)) {
             throw new liApiException('Invalid value for priceId or declinationId parameter');
         }
 
-        if ( !$this->checkGaugeAvailability($declinationId) ) {
+        if (!$this->checkGaugeAvailability($declinationId)) {
             throw new liApiException('Gauge is full or not available in your context');
         }
         
-        switch ( $data['type'] ) {
+        switch ($data['type']) {
             case 'product':
             case 'pass':
                 // TODO
@@ -282,7 +280,7 @@ class ApiCartItemsService extends ApiEntityService
         $type = !isset($data['type']) ? 'ticket' : $data['type'];
         
         // Update cart item
-        switch($type) {
+        switch ($type) {
             case 'ticket':
                 $success = $this->updateTicketCartItem($itemId, $data);
                 break;
@@ -320,7 +318,7 @@ class ApiCartItemsService extends ApiEntityService
         $cartItem = $accessor->toRecord($data, $cartItem, static::$FIELD_MAPPING);
 
         if (isset($data['quantity'])) {
-            if ( (int)$data['quantity'] != 1 ) {
+            if ((int)$data['quantity'] != 1) {
                 return false;
             }
         }
@@ -338,7 +336,7 @@ class ApiCartItemsService extends ApiEntityService
     public function deleteCartItem($cartId, $itemId, $type)
     {
         // Update cart item
-        switch($type) {
+        switch ($type) {
             case 'ticket':
                 $success = $this->deleteTicketCartItem($itemId);
                 break;
@@ -367,7 +365,7 @@ class ApiCartItemsService extends ApiEntityService
             return false;
         }
         
-        if ( $item->isSold() ) {
+        if ($item->isSold()) {
             return false;
         }
 
@@ -388,7 +386,7 @@ class ApiCartItemsService extends ApiEntityService
             return false;
         }
         
-        if ( $item['state'] == 'sold' ) {
+        if ($item['state'] == 'sold') {
             return false;
         }
 
@@ -413,7 +411,7 @@ class ApiCartItemsService extends ApiEntityService
         // TODO: take into account the type of item targeted
         $token = $this->oauth->getToken();
         
-        switch ( $this->type ) {
+        switch ($this->type) {
             case 'product':
             case 'pass':
                 // TODO

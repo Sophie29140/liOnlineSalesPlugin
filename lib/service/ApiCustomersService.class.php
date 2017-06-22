@@ -44,7 +44,7 @@ class ApiCustomersService extends ApiEntityService
     public function isIdentificated()
     {
         $token = $this->getOAuthService()->getToken();
-        return $token instanceof OsToken && $token->Transaction->contact_id !== NULL;
+        return $token instanceof OsToken && $token->Transaction->contact_id !== null;
     }
 
     /**
@@ -54,9 +54,10 @@ class ApiCustomersService extends ApiEntityService
     public function identify(array $query)
     {
         // prerequisites
-        if (!( isset($query['criteria']['password']) && $query['criteria']['password'] && isset($query['criteria']['password']['value'])
-            && isset($query['criteria']['email']) && $query['criteria']['email'] && isset($query['criteria']['email']['value']) ))
-            return NULL;
+        if (!(isset($query['criteria']['password']) && $query['criteria']['password'] && isset($query['criteria']['password']['value'])
+            && isset($query['criteria']['email']) && $query['criteria']['email'] && isset($query['criteria']['email']['value']))) {
+            return null;
+        }
 
         // encrypt password
         $serviceName = sfConfig::get('project_password_encryption_service', 'password_plain_text_service');
@@ -64,7 +65,7 @@ class ApiCustomersService extends ApiEntityService
         $salt = sfConfig::get('project_password_salt', '');
         $query['criteria']['password']['value'] = $encryptionService->encrypt($query['criteria']['password']['value'], $salt);
 
-        if (!( $contact = $this->buildQuery($query)->fetchOne() ) instanceof Contact ) {
+        if (!($contact = $this->buildQuery($query)->fetchOne()) instanceof Contact) {
             return false;
         }
         
@@ -80,7 +81,7 @@ class ApiCustomersService extends ApiEntityService
      */
     public function logout()
     {
-        if ( !$this->isIdentificated() ) {
+        if (!$this->isIdentificated()) {
             return false;
         }
 
@@ -94,7 +95,7 @@ class ApiCustomersService extends ApiEntityService
 
     public function update($id, array $data)
     {
-        if ( !$this->isIdentificated() ) {
+        if (!$this->isIdentificated()) {
             return false;
         }
         unset($data['id'], $data['email']);
@@ -108,8 +109,9 @@ class ApiCustomersService extends ApiEntityService
      */
     public function getIdentifiedContact()
     {
-        if ( !$this->isIdentificated() )
-            return NULL;
+        if (!$this->isIdentificated()) {
+            return null;
+        }
         return $this->getOAuthService()->getToken()->Transaction->Contact;
     }
 
@@ -120,7 +122,7 @@ class ApiCustomersService extends ApiEntityService
     public function getIdentifiedCustomer()
     {
         $contact = $this->getIdentifiedContact();
-        if ( !$contact ) {
+        if (!$contact) {
             return false;
         }
         return $this->getFormattedEntity($contact);

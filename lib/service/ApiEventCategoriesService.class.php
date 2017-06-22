@@ -11,8 +11,8 @@
  *
  * @author Baptiste SIMON <baptiste.simon@libre-informatique.fr>
  */
-class ApiEventCategoriesService extends ApiEntityService {
-
+class ApiEventCategoriesService extends ApiEntityService
+{
     protected $oauth;
     protected static $FIELD_MAPPING = [
         'id'                => ['type' => 'single', 'value' => 'id', 'updatable' => false],

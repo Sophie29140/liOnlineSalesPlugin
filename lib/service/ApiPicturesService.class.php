@@ -12,7 +12,6 @@
  */
 class ApiPicturesService extends ApiEntityService
 {
-
     protected static $FIELD_MAPPING = [
         'id'            => ['type' => 'single', 'value' => 'id', 'updatable' => false],
         'name'          => ['type' => 'single', 'value' => 'name'],

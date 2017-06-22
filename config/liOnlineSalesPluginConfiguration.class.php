@@ -23,19 +23,19 @@
 
 class liOnlineSalesPluginConfiguration extends sfPluginConfiguration
 {
-  public function initialize()
-  {
-    $this->initializeSubmenus();
+    public function initialize()
+    {
+        $this->initializeSubmenus();
     
     // this should usually be useless because the require is made by the config/autoload.inc.php
     $this->initializeAutoload();
     
-    return parent::initialize();
-  }
+        return parent::initialize();
+    }
 
-  public function initializeSubmenus()
-  {
-    // add submenus
+    public function initializeSubmenus()
+    {
+        // add submenus
     // TODO
     $this->configuration->appendMenus(array(
       'setup_extra' => array(
@@ -75,5 +75,5 @@ class liOnlineSalesPluginConfiguration extends sfPluginConfiguration
         ),
       )
     ));
-  }
+    }
 }
